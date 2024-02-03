@@ -1,8 +1,11 @@
+// NestJS modules
 import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigType } from '@nestjs/config';
-import register from '../config/environments/register.environment';
-import { ENV, isProd } from '../config/environments/variables.environment';
+
+// Env config
+import register from '@env/register.environment';
+import { ENV, isProd } from '@env/variables.environment';
 
 @Global()
 @Module({

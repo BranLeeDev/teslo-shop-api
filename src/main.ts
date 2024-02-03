@@ -4,7 +4,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
-import { PORT } from './common/config/environments/variables.environment';
+import { PORT } from '@env/variables.environment';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
