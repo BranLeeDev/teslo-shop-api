@@ -5,7 +5,8 @@ import { ConfigType } from '@nestjs/config';
 
 // Env config
 import register from '@env/register.environment';
-import { ENV, isProd } from '@env/variables.environment';
+import { ENV } from '@env/variables.environment';
+import { Product } from './entities/products/product.entity';
 
 @Global()
 @Module({
@@ -30,9 +31,8 @@ import { ENV, isProd } from '@env/variables.environment';
         return {
           type: 'postgres',
           url: DATABASE_URL,
-          synchronize: !isProd,
-          autoLoadEntities: true,
-          ssl: isProd,
+          synchronize: true,
+          entities: [Product],
         };
       },
     }),

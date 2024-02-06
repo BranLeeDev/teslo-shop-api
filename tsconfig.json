@@ -19,6 +19,7 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "@env/*": ["./src/common/config/environments/*"],
+      "@entity/*": ["./src/common/database/entities/*"],
     },
   },
 }
