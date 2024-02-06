@@ -1,4 +1,4 @@
-import { Column, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
 import { Base } from '../base.entity';
 
 @Entity({ name: 'products' })
@@ -7,9 +7,9 @@ export class Product extends Base {
   name: string;
 
   @Column({ type: 'varchar', length: 60, unique: true })
-  sku: string;
+  slug: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'varchar', length: 255 })
   description: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
@@ -17,4 +17,22 @@ export class Product extends Base {
 
   @Column({ type: 'int' })
   stock: number;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  checkSlugInsert() {
+    this.slug = this.generateSlug(this.name);
+  }
+
+  private generateSlug(text: string): string {
+    return text
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
+      .replace(/-+/g, '-')
+      .substring(0, 60)
+      .replace(/^-+/, '')
+      .replace(/-+$/, '');
+  }
 }

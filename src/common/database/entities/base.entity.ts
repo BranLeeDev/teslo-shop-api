@@ -11,7 +11,7 @@ export class Base {
 
   @Exclude()
   @CreateDateColumn({
-    type: 'timestamp',
+    type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
     name: 'created_at',
   })
@@ -19,7 +19,7 @@ export class Base {
 
   @Exclude()
   @UpdateDateColumn({
-    type: 'timestamp',
+    type: 'timestamptz',
     default: () => 'CURRENT_TIMESTAMP',
     name: 'updated_at',
   })
