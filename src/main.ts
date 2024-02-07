@@ -6,7 +6,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
 import { PORT } from '@env/variables.environment';
-import { SwaggerModule } from './common/swagger/swagger.module';
+import { SwaggerModule } from './common/modules/swagger/swagger.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 async function bootstrap() {

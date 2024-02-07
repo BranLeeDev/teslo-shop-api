@@ -6,7 +6,7 @@ import { ConfigType } from '@nestjs/config';
 // Env config
 import register from '@env/register.environment';
 import { ENV } from '@env/variables.environment';
-import { Product } from './entities/products/product.entity';
+import { Product } from '@entity/products/product.entity';
 
 @Global()
 @Module({

@@ -18,8 +18,8 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@env/*": ["./src/common/config/environments/*"],
-      "@entity/*": ["./src/common/database/entities/*"],
-    },
-  },
+      "@env/*": ["src/common/modules/config/environments/*"],
+      "@entity/*": ["src/common/modules/database/entities/*"]
+    }
+  }
 }
