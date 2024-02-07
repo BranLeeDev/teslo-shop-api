@@ -1,4 +1,5 @@
 import {
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -8,6 +9,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { ImagesTypes } from 'src/common/modules/database/types/enums.type';
 
 export class CreateImageDto {
   @IsNotEmpty()
@@ -35,8 +37,18 @@ export class CreateImageDto {
   readonly alt: string;
 
   @IsNotEmpty()
+  @IsEnum(ImagesTypes)
+  readonly type: ImagesTypes;
+
+  @IsNotEmpty()
   @IsNumber()
   @IsInt()
   @IsPositive()
   readonly sizeKb: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @IsInt()
+  @IsPositive()
+  readonly productId: number;
 }

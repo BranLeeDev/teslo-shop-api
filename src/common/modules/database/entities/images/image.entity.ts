@@ -1,7 +1,8 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Base } from '../base.entity';
 import { ImagesTypes } from '../../types/enums.type';
 import { Exclude } from 'class-transformer';
+import { Product } from '@entity/products/product.entity';
 
 @Entity({ name: 'images' })
 export class Image extends Base {
@@ -24,4 +25,8 @@ export class Image extends Base {
   @Exclude()
   @Column({ type: 'int', name: 'size_kb' })
   sizeKb: number;
+
+  @ManyToOne(() => Product, (product) => product.images)
+  @JoinColumn({ name: 'product_id' })
+  product: Product;
 }

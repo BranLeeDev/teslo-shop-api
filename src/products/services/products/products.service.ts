@@ -1,5 +1,5 @@
 // NestJS modules
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // Third-party libraries
@@ -36,32 +36,31 @@ export class ProductsService implements IProductsService {
     return productsList;
   }
 
-  async findOne(term: string): Promise<Product> {
+  async findOne(term: string, hasRelations?: boolean): Promise<Product> {
+    let relations: string[] = [];
+    let product: Product;
     const productId = Number(term);
+
+    if (hasRelations) {
+      relations = ['images'];
+    }
+
     if (!isNaN(productId)) {
-      const product = await this.findProductById(productId);
-      return product;
+      product = await this.productRepo.findOneOrFail({
+        where: {
+          id: productId,
+        },
+        relations,
+      });
     } else {
-      const product = await this.findProductBySlug(term);
-      return product;
+      product = await this.productRepo.findOneOrFail({
+        where: {
+          slug: term,
+        },
+        relations,
+      });
     }
-  }
 
-  private async findProductById(productId: number): Promise<Product> {
-    const product = await this.productRepo.findOne({
-      where: { id: productId },
-    });
-    if (!product) {
-      throw new NotFoundException(`Product with ID ${productId} not found`);
-    }
-    return product;
-  }
-
-  private async findProductBySlug(slug: string): Promise<Product> {
-    const product = await this.productRepo.findOne({ where: { slug } });
-    if (!product) {
-      throw new NotFoundException(`Product with slug ${slug} not found`);
-    }
     return product;
   }
 

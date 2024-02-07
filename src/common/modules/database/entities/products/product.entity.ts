@@ -1,5 +1,6 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
 import { Base } from '../base.entity';
+import { Image } from '@entity/images/image.entity';
 
 @Entity({ name: 'products' })
 export class Product extends Base {
@@ -17,6 +18,9 @@ export class Product extends Base {
 
   @Column({ type: 'int' })
   stock: number;
+
+  @OneToMany(() => Image, (image) => image.product)
+  images: Image[];
 
   @BeforeInsert()
   @BeforeUpdate()

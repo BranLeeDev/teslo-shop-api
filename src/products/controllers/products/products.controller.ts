@@ -48,7 +48,7 @@ export class ProductsController {
 
   @Get(':term')
   async findProductByIdOrSlug(@Param('term') term: string): Promise<Product> {
-    const res = await this.productsService.findOne(term);
+    const res = await this.productsService.findOne(term, true);
     return res;
   }
 
