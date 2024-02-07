@@ -5,7 +5,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -19,10 +18,10 @@ import {
   CreateProductDto,
   FilterProductDto,
   UpdateProductDto,
-} from 'src/products/dtos';
+} from '../../dtos';
 
 // Services
-import { ProductsService } from '../../services/products/products.service';
+import { ProductsService } from 'src/products/services/products/products.service';
 
 @Controller('products')
 export class ProductsController {
@@ -40,10 +39,10 @@ export class ProductsController {
   async create(
     @Body() createProductDto: CreateProductDto,
   ): Promise<{ message: string; data: Product }> {
-    const createdProduct = await this.productsService.create(createProductDto);
+    const res = await this.productsService.create(createProductDto);
     return {
       message: 'Product created successfully',
-      data: createdProduct,
+      data: res,
     };
   }
 
@@ -53,29 +52,26 @@ export class ProductsController {
     return res;
   }
 
-  @Patch(':productId')
+  @Patch(':term')
   async update(
-    @Param('productId', ParseIntPipe) productId: number,
+    @Param('term') term: string,
     @Body() updateProductDto: UpdateProductDto,
   ): Promise<{ message: string; data: Product }> {
-    const updatedProduct = await this.productsService.update(
-      productId,
-      updateProductDto,
-    );
+    const res = await this.productsService.update(term, updateProductDto);
     return {
       message: 'Product updated successfully',
-      data: updatedProduct,
+      data: res,
     };
   }
 
-  @Delete(':productId')
+  @Delete(':term')
   async delete(
-    @Param('productId', ParseIntPipe) productId: number,
+    @Param('term') term: string,
   ): Promise<{ message: string; data: Product }> {
-    const deletedProduct = await this.productsService.delete(productId);
+    const res = await this.productsService.delete(term);
     return {
       message: 'Product deleted successfully',
-      data: deletedProduct,
+      data: res,
     };
   }
 }

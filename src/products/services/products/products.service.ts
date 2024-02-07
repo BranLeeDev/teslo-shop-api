@@ -3,7 +3,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // Third-party libraries
-import { FindManyOptions, Repository } from 'typeorm';
+import { Repository, FindManyOptions } from 'typeorm';
+
+// Models
+import { IProductsService } from '../../interfaces/products.interface';
 
 // Entities
 import { Product } from '@entity/products/product.entity';
@@ -16,7 +19,7 @@ import {
 } from '../../dtos/index';
 
 @Injectable()
-export class ProductsService {
+export class ProductsService implements IProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
@@ -44,7 +47,7 @@ export class ProductsService {
     }
   }
 
-  async findProductById(productId: number): Promise<Product> {
+  private async findProductById(productId: number): Promise<Product> {
     const product = await this.productRepo.findOne({
       where: { id: productId },
     });
@@ -54,7 +57,7 @@ export class ProductsService {
     return product;
   }
 
-  async findProductBySlug(slug: string): Promise<Product> {
+  private async findProductBySlug(slug: string): Promise<Product> {
     const product = await this.productRepo.findOne({ where: { slug } });
     if (!product) {
       throw new NotFoundException(`Product with slug ${slug} not found`);
@@ -69,17 +72,18 @@ export class ProductsService {
   }
 
   async update(
-    productId: number,
+    term: string,
     updateProductDto: UpdateProductDto,
   ): Promise<Product> {
-    const product = await this.findProductById(productId);
+    const product = await this.findOne(term);
     this.productRepo.merge(product, updateProductDto);
     const updatedProduct = await this.productRepo.save(product);
     return updatedProduct;
   }
 
-  async delete(productId: number): Promise<Product> {
-    const product = await this.findProductById(productId);
+  async delete(term: string): Promise<Product> {
+    const product = await this.findOne(term);
+    const productId = product.id;
     await this.productRepo.delete(productId);
     return product;
   }
