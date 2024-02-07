@@ -28,6 +28,8 @@ export class ProductsService implements IProductsService {
   async findAll(filterProductDto?: FilterProductDto): Promise<Product[]> {
     const queryOptions: FindManyOptions<Product> = {
       relations: ['images'],
+      take: 10,
+      skip: 0,
     };
 
     if (filterProductDto) {
