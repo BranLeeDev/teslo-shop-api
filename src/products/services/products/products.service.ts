@@ -87,4 +87,8 @@ export class ProductsService implements IProductsService {
     await this.productRepo.delete(productId);
     return product;
   }
+
+  async deleteAllProducts() {
+    await this.productRepo.delete({});
+  }
 }
