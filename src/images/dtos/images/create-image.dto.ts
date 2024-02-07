@@ -14,29 +14,29 @@ export class CreateImageDto {
   @IsString()
   @IsUrl()
   @MinLength(11)
-  url: string;
+  readonly url: string;
 
   @IsNotEmpty()
   @IsNumber()
   @IsInt()
   @IsPositive()
-  width: number;
+  readonly width: number;
 
   @IsNotEmpty()
   @IsNumber()
   @IsInt()
   @IsPositive()
-  height: number;
+  readonly height: number;
 
   @IsNotEmpty()
   @IsString()
   @MinLength(3)
   @MaxLength(125)
-  alt: string;
+  readonly alt: string;
 
   @IsNotEmpty()
   @IsNumber()
   @IsInt()
   @IsPositive()
-  sizeKb: number;
+  readonly sizeKb: number;
 }
