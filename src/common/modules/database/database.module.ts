@@ -6,6 +6,9 @@ import { ConfigType } from '@nestjs/config';
 // Env config
 import register from '@env/register.environment';
 import { ENV } from '@env/variables.environment';
+
+// Entities
+import { Image } from '@entity/images/image.entity';
 import { Product } from '@entity/products/product.entity';
 
 @Global()
@@ -32,7 +35,7 @@ import { Product } from '@entity/products/product.entity';
           type: 'postgres',
           url: DATABASE_URL,
           synchronize: true,
-          entities: [Product],
+          entities: [Product, Image],
         };
       },
     }),
