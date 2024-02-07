@@ -9,10 +9,10 @@ export class Image extends Base {
   @Column({ type: 'text' })
   url: string;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', name: 'width_px' })
   width: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', name: 'height_px' })
   height: number;
 
   @Column({ type: 'varchar', length: 125 })
@@ -23,7 +23,7 @@ export class Image extends Base {
   type: string;
 
   @Exclude()
-  @Column({ type: 'int', name: 'size_kb' })
+  @Column({ type: 'decimal', precision: 6, scale: 2, name: 'size_kb' })
   sizeKb: number;
 
   @ManyToOne(() => Product, (product) => product.images)

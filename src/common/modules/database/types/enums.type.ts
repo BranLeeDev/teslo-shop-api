@@ -1,6 +1,5 @@
 export enum ImagesTypes {
-  JPEG = 'jpeg',
-  JPG = 'jpg',
-  PNG = 'png',
-  SVG = 'svg',
+  JPEG = 'JPEG',
+  JPG = 'JPG',
+  PNG = 'PNG',
 }

@@ -1,5 +1,5 @@
 // NestJS modules
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // Third-party libraries
@@ -26,13 +26,20 @@ export class ProductsService implements IProductsService {
   ) {}
 
   async findAll(filterProductDto?: FilterProductDto): Promise<Product[]> {
-    const queryOptions: FindManyOptions<Product> = {};
+    const queryOptions: FindManyOptions<Product> = {
+      relations: ['images'],
+    };
     if (filterProductDto) {
       const { limit, offset } = filterProductDto;
       queryOptions.take = limit;
       queryOptions.skip = offset;
     }
     const productsList = await this.productRepo.find(queryOptions);
+
+    productsList.forEach((product) => {
+      product.images = [product.images[0]];
+    });
+
     return productsList;
   }
 
@@ -46,19 +53,25 @@ export class ProductsService implements IProductsService {
     }
 
     if (!isNaN(productId)) {
-      product = await this.productRepo.findOneOrFail({
+      const res = await this.productRepo.findOne({
         where: {
           id: productId,
         },
         relations,
       });
+      if (!res)
+        throw new NotFoundException(`Product with id ${productId} not found`);
+      product = res;
     } else {
-      product = await this.productRepo.findOneOrFail({
+      const res = await this.productRepo.findOne({
         where: {
           slug: term,
         },
         relations,
       });
+      if (!res)
+        throw new NotFoundException(`Product with slug ${term} not found`);
+      product = res;
     }
 
     return product;
