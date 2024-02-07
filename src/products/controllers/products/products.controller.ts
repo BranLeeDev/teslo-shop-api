@@ -21,7 +21,7 @@ import {
 } from '../../dtos';
 
 // Services
-import { ProductsService } from 'src/products/services/products/products.service';
+import { ProductsService } from '../../services/products/products.service';
 
 @Controller('products')
 export class ProductsController {
