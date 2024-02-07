@@ -5,9 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 // Third-party libraries
 import { Repository, FindManyOptions } from 'typeorm';
 
-// Models
-import { IProductsService } from '../../interfaces/products.interface';
-
 // Entities
 import { Product } from '@entity/products/product.entity';
 
@@ -17,6 +14,9 @@ import {
   FilterProductDto,
   UpdateProductDto,
 } from '../../dtos/index';
+
+// Models
+import { IProductsService } from '../../interfaces/products.interface';
 
 @Injectable()
 export class ProductsService implements IProductsService {
@@ -29,75 +29,61 @@ export class ProductsService implements IProductsService {
     const queryOptions: FindManyOptions<Product> = {
       relations: ['images'],
     };
+
     if (filterProductDto) {
       const { limit, offset } = filterProductDto;
       queryOptions.take = limit;
       queryOptions.skip = offset;
     }
-    const productsList = await this.productRepo.find(queryOptions);
 
-    productsList.forEach((product) => {
+    const productsList: Product[] = await this.productRepo.find(queryOptions);
+
+    productsList.forEach((product: Product) => {
       product.images = [product.images[0]];
     });
 
     return productsList;
   }
 
-  async findOne(term: string, hasRelations?: boolean): Promise<Product> {
-    let relations: string[] = [];
-    let product: Product;
-    const productId = Number(term);
-
-    if (hasRelations) {
-      relations = ['images'];
+  async findOne(term: string, hasRelations?: boolean) {
+    const product = await this.findProduct(term, hasRelations);
+    if (!product) {
+      throw new NotFoundException(`Product not found`);
     }
+    return product;
+  }
+
+  private async findProduct(term: string, hasRelations?: boolean) {
+    const relations: string[] = hasRelations ? ['images'] : [];
+    const productId: number = Number(term);
 
     if (!isNaN(productId)) {
-      const res = await this.productRepo.findOne({
-        where: {
-          id: productId,
-        },
+      return this.productRepo.findOne({
+        where: { id: productId },
         relations,
       });
-      if (!res)
-        throw new NotFoundException(`Product with id ${productId} not found`);
-      product = res;
     } else {
-      const res = await this.productRepo.findOne({
-        where: {
-          slug: term,
-        },
+      return this.productRepo.findOne({
+        where: { slug: term },
         relations,
       });
-      if (!res)
-        throw new NotFoundException(`Product with slug ${term} not found`);
-      product = res;
     }
-
-    return product;
   }
 
-  async create(createProductDto: CreateProductDto): Promise<Product> {
-    const newProduct = this.productRepo.create(createProductDto);
-    const createdProduct = await this.productRepo.save(newProduct);
-    return createdProduct;
+  async create(createProductDto: CreateProductDto) {
+    const newProduct: Product = this.productRepo.create(createProductDto);
+    return this.productRepo.save(newProduct);
   }
 
-  async update(
-    term: string,
-    updateProductDto: UpdateProductDto,
-  ): Promise<Product> {
+  async update(term: string, updateProductDto: UpdateProductDto) {
     const product = await this.findOne(term);
     this.productRepo.merge(product, updateProductDto);
-    const updatedProduct = await this.productRepo.save(product);
-    return updatedProduct;
+    return this.productRepo.save(product);
   }
 
-  async delete(term: string): Promise<Product> {
+  async delete(term: string) {
     const product = await this.findOne(term);
-    const productId = product.id;
-    await this.productRepo.delete(productId);
-    return product;
+    await this.productRepo.delete(product.id);
   }
 
   async deleteAllProducts() {

@@ -4,11 +4,14 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 
 // Entities
 import { Product } from '@entity/products/product.entity';
@@ -22,7 +25,6 @@ import {
 
 // Services
 import { ProductsService } from '../../services/products/products.service';
-import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('products')
 @Controller('products')
@@ -30,50 +32,54 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  async findAll(
-    @Query() filterProductDto: FilterProductDto,
-  ): Promise<Product[]> {
-    const res = await this.productsService.findAll(filterProductDto);
-    return res;
+  @ApiOperation({ summary: 'Get all products' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Success',
+    type: [Product],
+  })
+  async findAll(@Query() filterProductDto: FilterProductDto) {
+    return this.productsService.findAll(filterProductDto);
   }
 
   @Post()
-  async create(
-    @Body() createProductDto: CreateProductDto,
-  ): Promise<{ message: string; data: Product }> {
-    const res = await this.productsService.create(createProductDto);
-    return {
-      message: 'Product created successfully',
-      data: res,
-    };
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create a new product' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Created',
+    type: Product,
+  })
+  async create(@Body() createProductDto: CreateProductDto) {
+    return this.productsService.create(createProductDto);
   }
 
   @Get(':term')
-  async findProductByIdOrSlug(@Param('term') term: string): Promise<Product> {
-    const res = await this.productsService.findOne(term, true);
-    return res;
+  @ApiOperation({ summary: 'Get a product by id or slug' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: Product })
+  async findProductByIdOrSlug(@Param('term') term: string) {
+    return this.productsService.findOne(term, true);
   }
 
   @Patch(':term')
+  @ApiOperation({ summary: 'Update a product' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Updated', type: Product })
   async update(
     @Param('term') term: string,
     @Body() updateProductDto: UpdateProductDto,
-  ): Promise<{ message: string; data: Product }> {
-    const res = await this.productsService.update(term, updateProductDto);
-    return {
-      message: 'Product updated successfully',
-      data: res,
-    };
+  ) {
+    return this.productsService.update(term, updateProductDto);
   }
 
   @Delete(':term')
-  async delete(
-    @Param('term') term: string,
-  ): Promise<{ message: string; data: Product }> {
-    const res = await this.productsService.delete(term);
-    return {
-      message: 'Product deleted successfully',
-      data: res,
-    };
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete a product' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Deleted',
+    type: Product,
+  })
+  async delete(@Param('term') term: string) {
+    await this.productsService.delete(term);
   }
 }

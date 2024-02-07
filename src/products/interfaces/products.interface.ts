@@ -6,5 +6,6 @@ export interface IProductsService {
   findOne(term: string, hasRelations?: boolean): Promise<Product>;
   create(createProductDto: CreateProductDto): Promise<Product>;
   update(term: string, updateProductDto: UpdateProductDto): Promise<Product>;
-  delete(term: string): Promise<Product>;
+  delete(term: string): Promise<void>;
+  deleteAllProducts(): Promise<void>;
 }

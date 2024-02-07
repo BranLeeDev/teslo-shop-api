@@ -1,17 +1,26 @@
+// NestJS modules
 import {
   Body,
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { CreateImageDto } from 'src/images/dtos';
-import { UpdateImageDto } from 'src/images/dtos/images/update-image.dto';
-import { ImagesService } from 'src/images/services/images/images.service';
+import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+
+// Entities
+import { Image } from '@entity/images/image.entity';
+
+// DTOs
+import { CreateImageDto, UpdateImageDto } from '../../dtos';
+
+// Services
+import { ImagesService } from '../../services/images/images.service';
 
 @ApiTags('images')
 @Controller('images')
@@ -19,38 +28,39 @@ export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get all images' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: [Image] })
   async getAllImages() {
-    const res = await this.imagesService.findAll();
-    return res;
+    return this.imagesService.findAll();
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create a new image' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Created',
+    type: Image,
+  })
   async createImage(@Body() createImageDto: CreateImageDto) {
-    const res = await this.imagesService.create(createImageDto);
-    return {
-      message: 'Image created successfully',
-      data: res,
-    };
+    return this.imagesService.create(createImageDto);
   }
 
   @Patch(':imageId')
+  @ApiOperation({ summary: 'Update an image' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Updated', type: Image })
   async updateImage(
     @Param('imageId', ParseIntPipe) imageId: number,
     @Body() updateImageDto: UpdateImageDto,
   ) {
-    const res = await this.imagesService.update(imageId, updateImageDto);
-    return {
-      message: 'Image updated successfully',
-      data: res,
-    };
+    return this.imagesService.update(imageId, updateImageDto);
   }
 
   @Delete(':imageId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete an image' })
+  @ApiResponse({ status: HttpStatus.NO_CONTENT, description: 'Deleted' })
   async deleteImage(@Param('imageId', ParseIntPipe) imageId: number) {
-    const res = await this.imagesService.delete(imageId);
-    return {
-      message: 'Image deleted successfully',
-      data: res,
-    };
+    await this.imagesService.delete(imageId);
   }
 }

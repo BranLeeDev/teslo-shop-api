@@ -26,7 +26,9 @@ export class Image extends Base {
   @Column({ type: 'decimal', precision: 6, scale: 2, name: 'size_kb' })
   sizeKb: number;
 
-  @ManyToOne(() => Product, (product) => product.images)
+  @ManyToOne(() => Product, (product) => product.images, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'product_id' })
   product: Product;
 }

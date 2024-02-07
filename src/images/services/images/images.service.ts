@@ -1,13 +1,24 @@
+// NestJS modules
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Image } from '@entity/images/image.entity';
-import { CreateImageDto } from '../../dtos';
+
+// Third-party libraries
 import { Repository } from 'typeorm';
-import { ProductsService } from 'src/products/services/products/products.service';
-import { UpdateImageDto } from 'src/images/dtos/images/update-image.dto';
+
+// Entities
+import { Image } from '@entity/images/image.entity';
+
+// DTOs
+import { CreateImageDto, UpdateImageDto } from '../../dtos';
+
+// Models
+import { IImagesService } from 'src/images/interfaces/images.interface';
+
+// Services
+import { ProductsService } from '../../../products/services/products/products.service';
 
 @Injectable()
-export class ImagesService {
+export class ImagesService implements IImagesService {
   constructor(
     @InjectRepository(Image)
     private readonly imageRepo: Repository<Image>,
@@ -15,8 +26,7 @@ export class ImagesService {
   ) {}
 
   async findAll() {
-    const imagesList = await this.imageRepo.find();
-    return imagesList;
+    return this.imageRepo.find();
   }
 
   async create(createImageDto: CreateImageDto) {
@@ -27,14 +37,18 @@ export class ImagesService {
       );
       newImage.product = product;
     }
-    const createdImage = await this.imageRepo.save(newImage);
-    return createdImage;
+    return this.imageRepo.save(newImage);
+  }
+
+  private async findImageById(imageId: number) {
+    const image = await this.imageRepo.findOneBy({ id: imageId });
+    if (!image)
+      throw new NotFoundException(`Image with id ${imageId} not found`);
+    return image;
   }
 
   async update(imageId: number, updateImageDto: UpdateImageDto) {
-    const imageFound = await this.imageRepo.findOneBy({ id: imageId });
-    if (!imageFound)
-      throw new NotFoundException(`Image with id ${imageId} not found`);
+    const imageFound = await this.findImageById(imageId);
     if (updateImageDto.productId) {
       const product = await this.productsService.findOne(
         String(updateImageDto.productId),
@@ -42,16 +56,12 @@ export class ImagesService {
       imageFound.product = product;
     }
     this.imageRepo.merge(imageFound, updateImageDto);
-    const updatedImage = await this.imageRepo.save(imageFound);
-    return updatedImage;
+    return this.imageRepo.save(imageFound);
   }
 
   async delete(imageId: number) {
-    const imageFound = await this.imageRepo.findOneBy({ id: imageId });
-    if (!imageFound)
-      throw new NotFoundException(`Image with id ${imageId} not found`);
+    await this.findImageById(imageId);
     await this.imageRepo.delete(imageId);
-    return imageFound;
   }
 
   async deleteAllImages() {
