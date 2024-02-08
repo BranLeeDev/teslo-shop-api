@@ -52,4 +52,10 @@ export const joiConfigSchema = Joi.object({
     is: DEV,
     then: PORT,
   }),
+  REDIS_HOST: NAME,
+  REDIS_PORT: Joi.number().integer().min(1000).required(),
+  REDIS_PASSWORD: Joi.when(NODE_ENV, {
+    is: PROD,
+    then: Joi.string().min(20).max(64).required(),
+  }),
 });

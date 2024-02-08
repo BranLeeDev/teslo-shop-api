@@ -9,6 +9,11 @@ export default registerAs('registers', () => {
           url: process.env.DATABASE_URL as string,
         },
       },
+      redis: {
+        host: process.env.REDIS_HOST as string,
+        port: Number(process.env.REDIS_PORT) as number,
+        password: process.env.REDIS_PASSWORD as string,
+      },
     };
   }
 
@@ -21,6 +26,11 @@ export default registerAs('registers', () => {
         port: process.env.POSTGRES_PORT as string,
         name: process.env.POSTGRES_DB as string,
       },
+    },
+    redis: {
+      host: process.env.REDIS_HOST as string,
+      port: Number(process.env.REDIS_PORT) as number,
+      password: process.env.REDIS_PASSWORD as string,
     },
   };
 });
