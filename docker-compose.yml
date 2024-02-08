@@ -21,8 +21,12 @@ services:
       - ${PGADMIN_HOST_PORT}:${PGADMIN_PORT}
 
   redis:
-    image: redis:7.2.0
+    image: redis:7
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
     volumes:
       - redis:/data
+
+volumes:
+  redis:
+    driver: local
