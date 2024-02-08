@@ -27,6 +27,17 @@ services:
     volumes:
       - redis:/data
 
+  teslo-shop-api:
+    container_name: teslo-shop-api
+    build:
+      target: production
+      context: .
+      args:
+        - PORT=${PORT}
+    ports:
+      - ${PORT}:${PORT}
+    env_file: .env
+
 volumes:
   redis:
     driver: local
