@@ -5,6 +5,8 @@ import registers from './environments/register.environment';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import register from './environments/register.environment';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -26,6 +28,18 @@ import register from './environments/register.environment';
         }),
       }),
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 1000 * 6,
+        limit: 7,
+      },
+    ]),
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class ConfigModule {}
