@@ -5,7 +5,7 @@ import { ConfigType } from '@nestjs/config';
 
 // Env config
 import register from '@env/register.environment';
-import { ENV, isProd } from '@env/variables.environment';
+import { ENV } from '@env/variables.environment';
 
 // Entities
 import { Image } from '@entity/images/image.entity';
@@ -36,7 +36,6 @@ import { Product } from '@entity/products/product.entity';
           url: DATABASE_URL,
           synchronize: true,
           entities: [Product, Image],
-          ssl: isProd,
         };
       },
     }),
