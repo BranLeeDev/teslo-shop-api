@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Inject,
   Param,
   Patch,
   Post,
@@ -25,11 +26,15 @@ import {
 
 // Services
 import { ProductsService } from '../../services/products/products.service';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all products' })
@@ -39,7 +44,18 @@ export class ProductsController {
     type: [Product],
   })
   async findAll(@Query() filterProductDto: FilterProductDto) {
-    return this.productsService.findAll(filterProductDto);
+    const key = 'products-find-all';
+    const productsCached = await this.cacheManager.get(key);
+
+    if (productsCached) {
+      return productsCached;
+    }
+
+    const res = await this.productsService.findAll(filterProductDto);
+
+    await this.cacheManager.set(key, res, 1000 * 10);
+
+    return res;
   }
 
   @Post()
@@ -58,7 +74,18 @@ export class ProductsController {
   @ApiOperation({ summary: 'Get a product by id or slug' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: Product })
   async findProductByIdOrSlug(@Param('term') term: string) {
-    return this.productsService.findOne(term, true);
+    const key = 'product-find-one';
+    const productCached = await this.cacheManager.get(key);
+
+    if (productCached) {
+      return productCached;
+    }
+
+    const res = await this.productsService.findOne(term, true);
+
+    await this.cacheManager.set(key, res, 1000 * 10);
+
+    return res;
   }
 
   @Patch(':term')

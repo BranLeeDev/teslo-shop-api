@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { SeedService } from '../seed-service/seed.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -7,15 +7,15 @@ import { ApiTags } from '@nestjs/swagger';
 export class SeedController {
   constructor(private readonly seedService: SeedService) {}
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Get('products')
   async executeSeedForProducts() {
-    const res = await this.seedService.runSeedProducts();
-    return res;
+    await this.seedService.runSeedProducts();
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Get('images')
   async executeSeedForImages() {
-    const res = await this.seedService.runSeedImages();
-    return res;
+    await this.seedService.runSeedImages();
   }
 }

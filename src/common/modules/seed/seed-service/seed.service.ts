@@ -11,16 +11,12 @@ export class SeedService {
     private readonly imagesService: ImagesService,
   ) {}
 
-  async runSeedProducts(): Promise<string> {
+  async runSeedProducts() {
     await this.insertNewProducts();
-
-    return 'Database seeded with initial products successfully!';
   }
 
-  async runSeedImages(): Promise<string> {
+  async runSeedImages() {
     await this.insertNewImages();
-
-    return 'Database seeded with initial images successfully!';
   }
 
   private async insertNewImages() {
