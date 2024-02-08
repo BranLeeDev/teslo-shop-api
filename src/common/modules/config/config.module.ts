@@ -18,7 +18,7 @@ import register from './environments/register.environment';
       isGlobal: true,
       inject: [register.KEY],
       useFactory: async (registerService: ConfigType<typeof register>) => ({
-        ttl: 10000,
+        ttl: 10,
         max: 10,
         store: await redisStore({
           socket: {
