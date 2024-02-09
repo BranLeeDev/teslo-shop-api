@@ -20,6 +20,7 @@ COPY tsconfig*.json ${DIR}
 COPY .swcrc ${DIR}
 COPY nest-cli.json ${DIR}
 COPY src ${DIR}/src
+COPY client ${DIR}/client
 
 RUN pnpm build && \
     pnpm prune --prod
