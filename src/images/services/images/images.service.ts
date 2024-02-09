@@ -22,12 +22,14 @@ export class ImagesService {
     private readonly productsService: ProductsService,
   ) {}
 
-  async findAll(filterImageDto: FilterImageDto) {
+  async findAll(filterImageDto?: FilterImageDto) {
     const queryOptions: FindManyOptions = {};
 
-    const { limit, offset } = filterImageDto;
-    queryOptions.take = limit ?? 10;
-    queryOptions.skip = offset ?? 0;
+    if (filterImageDto) {
+      const { limit, offset } = filterImageDto;
+      queryOptions.take = limit ?? 10;
+      queryOptions.skip = offset ?? 0;
+    }
 
     return this.imageRepo.find(queryOptions);
   }

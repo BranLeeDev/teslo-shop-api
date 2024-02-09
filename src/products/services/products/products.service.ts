@@ -22,14 +22,16 @@ export class ProductsService {
     private readonly productRepo: Repository<Product>,
   ) {}
 
-  async findAll(filterProductDto: FilterProductDto) {
+  async findAll(filterProductDto?: FilterProductDto) {
     const queryOptions: FindManyOptions<Product> = {
       relations: ['images'],
     };
 
-    const { limit, offset } = filterProductDto;
-    queryOptions.take = limit ?? 10;
-    queryOptions.skip = offset ?? 0;
+    if (filterProductDto) {
+      const { limit, offset } = filterProductDto;
+      queryOptions.take = limit ?? 10;
+      queryOptions.skip = offset ?? 0;
+    }
 
     const productsList: Product[] = await this.productRepo.find(queryOptions);
 

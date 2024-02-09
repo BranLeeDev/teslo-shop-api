@@ -1,10 +1,6 @@
 // NestJS modules
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-// DTOs
-import { CreateProductDto } from '@products/dtos';
-import { CreateImageDto } from '@images/dtos';
-
 // Data
 import { productsList } from '../data/products-seed.data';
 import { imagesList } from '../data/images-seed.data';
@@ -29,20 +25,20 @@ export class SeedService {
       );
     }
 
-    await this.seedProducts(productsList);
-    await this.seedImages(imagesList);
+    await this.seedProducts();
+    await this.seedImages();
 
     this.isSeeded = true;
   }
 
-  private async seedImages(imagesList: CreateImageDto[]) {
+  private async seedImages() {
     await this.imagesService.deleteAllImages();
     for (const image of imagesList) {
       await this.imagesService.create(image);
     }
   }
 
-  private async seedProducts(productsList: CreateProductDto[]) {
+  private async seedProducts() {
     await this.productsService.deleteAllProducts();
     for (const product of productsList) {
       await this.productsService.create(product);
