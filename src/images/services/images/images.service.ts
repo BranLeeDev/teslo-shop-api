@@ -32,6 +32,11 @@ export class ImagesService {
     return this.imageRepo.find(queryOptions);
   }
 
+  async findImagesByProduct(term: string) {
+    const product = await this.productsService.findOne(term, true);
+    return product.images;
+  }
+
   async create(createImageDto: CreateImageDto) {
     const newImage = this.imageRepo.create(createImageDto);
     if (createImageDto.productId) {

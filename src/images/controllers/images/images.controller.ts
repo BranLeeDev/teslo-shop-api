@@ -35,6 +35,13 @@ export class ImagesController {
     return this.imagesService.findAll(filterImageDto);
   }
 
+  @Get('products/:term')
+  @ApiOperation({ summary: 'Get images by product' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: [Image] })
+  async getImagesByProduct(@Param('term') term: string) {
+    return this.imagesService.findImagesByProduct(term);
+  }
+
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new image' })
