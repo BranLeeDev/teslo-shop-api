@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 
@@ -17,10 +18,10 @@ import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { Image } from '@entity/images/image.entity';
 
 // DTOs
-import { CreateImageDto, UpdateImageDto } from '../../dtos';
+import { CreateImageDto, FilterImageDto, UpdateImageDto } from '../../dtos';
 
 // Services
-import { ImagesService } from '../../services/images/images.service';
+import { ImagesService } from '@images/services/images/images.service';
 
 @ApiTags('images')
 @Controller('images')
@@ -30,8 +31,8 @@ export class ImagesController {
   @Get()
   @ApiOperation({ summary: 'Get all images' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: [Image] })
-  async getAllImages() {
-    return this.imagesService.findAll();
+  async getAllImages(@Query() filterImageDto: FilterImageDto) {
+    return this.imagesService.findAll(filterImageDto);
   }
 
   @Post()

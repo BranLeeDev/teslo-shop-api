@@ -1,9 +1,14 @@
+// NestJS modules
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+// Images module
+import { Image } from '@entity/images/image.entity';
 import { ImagesService } from './services/images/images.service';
 import { ImagesController } from './controllers/images/images.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Image } from '@entity/images/image.entity';
-import { ProductsModule } from 'src/products/products.module';
+
+// Products module
+import { ProductsModule } from '@products/products.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Image]), ProductsModule],

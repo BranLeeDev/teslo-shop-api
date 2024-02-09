@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { Base } from '../base.entity';
-import { ImagesTypes } from '../../types/enums.type';
 import { Exclude } from 'class-transformer';
+import { ImagesTypes } from '../../types/enums.type';
+import { Base } from '../base.entity';
 import { Product } from '@entity/products/product.entity';
 
 @Entity({ name: 'images' })

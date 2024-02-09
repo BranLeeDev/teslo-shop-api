@@ -15,28 +15,21 @@ import {
   UpdateProductDto,
 } from '../../dtos/index';
 
-// Models
-import { IProductsService } from '../../interfaces/products.interface';
-
 @Injectable()
-export class ProductsService implements IProductsService {
+export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
   ) {}
 
-  async findAll(filterProductDto?: FilterProductDto): Promise<Product[]> {
+  async findAll(filterProductDto: FilterProductDto) {
     const queryOptions: FindManyOptions<Product> = {
       relations: ['images'],
-      take: 10,
-      skip: 0,
     };
 
-    if (filterProductDto) {
-      const { limit, offset } = filterProductDto;
-      queryOptions.take = limit;
-      queryOptions.skip = offset;
-    }
+    const { limit, offset } = filterProductDto;
+    queryOptions.take = limit ?? 10;
+    queryOptions.skip = offset ?? 0;
 
     const productsList: Product[] = await this.productRepo.find(queryOptions);
 

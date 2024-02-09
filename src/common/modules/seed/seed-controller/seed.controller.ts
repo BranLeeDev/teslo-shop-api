@@ -1,21 +1,18 @@
+// NestJS modules
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import { SeedService } from '../seed-service/seed.service';
 import { ApiTags } from '@nestjs/swagger';
+
+// Services
+import { SeedService } from '../seed-service/seed.service';
 
 @ApiTags('seed')
 @Controller('seed')
 export class SeedController {
   constructor(private readonly seedService: SeedService) {}
 
+  @Get()
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Get('products')
-  async executeSeedForProducts() {
-    await this.seedService.runSeedProducts();
-  }
-
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Get('images')
-  async executeSeedForImages() {
-    await this.seedService.runSeedImages();
+  async executeSeed() {
+    await this.seedService.runSeed();
   }
 }

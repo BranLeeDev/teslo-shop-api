@@ -7,7 +7,7 @@ import {
   Min,
 } from 'class-validator';
 
-export class FilterProductDto {
+export class FilterImageDto {
   @IsNumber({}, { message: 'Limit must be a number' })
   @IsInt({ message: 'Limit must be an integer' })
   @IsPositive({ message: 'Limit must be positive' })

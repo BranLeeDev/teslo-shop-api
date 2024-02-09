@@ -19,7 +19,10 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "@env/*": ["src/common/modules/config/environments/*"],
-      "@entity/*": ["src/common/modules/database/entities/*"]
+      "@entity/*": ["src/common/modules/database/entities/*"],
+      "@products/*": ["src/products/*"],
+      "@images/*": ["src/images/*"],
+      "@database/*": ["src/common/modules/database/*"]
     }
   }
 }

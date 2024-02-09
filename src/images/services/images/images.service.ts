@@ -3,30 +3,33 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // Third-party libraries
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 
 // Entities
 import { Image } from '@entity/images/image.entity';
 
 // DTOs
-import { CreateImageDto, UpdateImageDto } from '../../dtos';
-
-// Models
-import { IImagesService } from 'src/images/interfaces/images.interface';
+import { CreateImageDto, UpdateImageDto, FilterImageDto } from '../../dtos';
 
 // Services
-import { ProductsService } from '../../../products/services/products/products.service';
+import { ProductsService } from '@products/services/products/products.service';
 
 @Injectable()
-export class ImagesService implements IImagesService {
+export class ImagesService {
   constructor(
     @InjectRepository(Image)
     private readonly imageRepo: Repository<Image>,
     private readonly productsService: ProductsService,
   ) {}
 
-  async findAll() {
-    return this.imageRepo.find();
+  async findAll(filterImageDto: FilterImageDto) {
+    const queryOptions: FindManyOptions = {};
+
+    const { limit, offset } = filterImageDto;
+    queryOptions.take = limit ?? 10;
+    queryOptions.skip = offset ?? 0;
+
+    return this.imageRepo.find(queryOptions);
   }
 
   async create(createImageDto: CreateImageDto) {
