@@ -7,12 +7,25 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  InternalServerErrorException,
   Param,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiOkResponse,
+  ApiTooManyRequestsResponse,
+  ApiCreatedResponse,
+  ApiParam,
+  ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
+  ApiBadRequestResponse,
+  ApiNoContentResponse,
+} from '@nestjs/swagger';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 
 // Entities
 import { Product } from '@entity/products/product.entity';
@@ -26,87 +39,169 @@ import {
 
 // Services
 import { ProductsService } from '../../services/products/products.service';
-import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+
+// Utils
+import {
+  transformProductFindAll,
+  transformProductFindOne,
+} from '@products/utils/product.transformer';
 
 @ApiTags('products')
+@ApiTooManyRequestsResponse({
+  status: HttpStatus.TOO_MANY_REQUESTS,
+  description: 'ThrottlerException: Too Many Requests',
+})
+@ApiInternalServerErrorResponse({
+  status: HttpStatus.INTERNAL_SERVER_ERROR,
+  description: 'Internal server error',
+})
 @Controller('products')
 export class ProductsController {
   constructor(
     private readonly productsService: ProductsService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all products' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Success',
+  @ApiOperation({
+    summary: 'Retrieve all available products',
+    description:
+      'Fetches a list of all products currently available in the store.',
+  })
+  @ApiOkResponse({
+    description: 'List of products retrieved successfully',
     type: [Product],
   })
   async findAll(@Query() filterProductDto: FilterProductDto) {
-    const key = 'products-find-all';
-    const productsCached = await this.cacheManager.get(key);
+    try {
+      const key = 'products-find-all';
+      const productsCached = await this.cacheManager.get(key);
 
-    if (productsCached) {
-      return productsCached;
+      if (productsCached) return productsCached;
+
+      const res = await this.productsService.findAll(filterProductDto);
+
+      const finalRes = transformProductFindAll(res);
+
+      await this.cacheManager.set(key, finalRes, 1000 * 10);
+
+      return res;
+    } catch (error) {
+      throw new InternalServerErrorException();
     }
-
-    const res = await this.productsService.findAll(filterProductDto);
-
-    await this.cacheManager.set(key, res, 1000 * 10);
-
-    return res;
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Create a new product' })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Created',
+  @ApiOperation({
+    summary: 'Create a new product',
+    description: 'Creates a new product in the store',
+  })
+  @ApiCreatedResponse({
     type: Product,
+    description: 'The product has been successfully created',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid request. Please check your input',
   })
   async create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+    try {
+      const res = await this.productsService.create(createProductDto);
+      return {
+        message: 'Product created successfully',
+        data: res,
+      };
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   @Get(':term')
-  @ApiOperation({ summary: 'Get a product by id or slug' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Success', type: Product })
+  @ApiOperation({
+    summary: 'Get a product by id or slug',
+    description: 'Retrieves a product using its unique identifier (id) or slug',
+  })
+  @ApiParam({
+    name: 'term',
+    description: 'Unique identifier (id) or slug of the product',
+    example: 'cotton-t-shirt',
+  })
+  @ApiOkResponse({
+    description: 'Product retrieved successfully',
+    type: Product,
+  })
+  @ApiNotFoundResponse({
+    description: 'Product not found',
+  })
   async findProductByIdOrSlug(@Param('term') term: string) {
-    const key = 'product-find-one';
-    const productCached = await this.cacheManager.get(key);
+    try {
+      const key = 'product-find-one';
+      const productCached = await this.cacheManager.get(key);
 
-    if (productCached) {
-      return productCached;
+      if (productCached) return productCached;
+
+      const res = await this.productsService.findOne(term, true);
+
+      const finalRes = transformProductFindOne(res);
+
+      await this.cacheManager.set(key, finalRes, 1000 * 10);
+
+      return res;
+    } catch (error) {
+      return Promise.reject(error);
     }
-
-    const res = await this.productsService.findOne(term, true);
-
-    await this.cacheManager.set(key, res, 1000 * 10);
-
-    return res;
   }
 
   @Patch(':term')
-  @ApiOperation({ summary: 'Update a product' })
-  @ApiResponse({ status: HttpStatus.OK, description: 'Updated', type: Product })
+  @ApiOperation({
+    summary: 'Update a product',
+    description:
+      'Updates an existing product identified by its unique identifier (id) or slug',
+  })
+  @ApiParam({
+    name: 'term',
+    description: 'Unique identifier (id) or slug of the product to update',
+    example: 'cotton-t-shirt',
+  })
+  @ApiOkResponse({ description: 'Product updated successfully', type: Product })
+  @ApiBadRequestResponse({
+    description: 'Invalid request. Please check your input',
+  })
   async update(
     @Param('term') term: string,
     @Body() updateProductDto: UpdateProductDto,
   ) {
-    return this.productsService.update(term, updateProductDto);
+    try {
+      const res = await this.productsService.update(term, updateProductDto);
+      return {
+        message: 'Product updated successfully',
+        data: res,
+      };
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   @Delete(':term')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Delete a product' })
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'Deleted',
-    type: Product,
+  @ApiOperation({
+    summary: 'Delete a product',
+    description:
+      'Deletes an existing product identified by its unique identifier (id) or slug',
+  })
+  @ApiParam({
+    name: 'term',
+    description: 'Unique identifier (id) or slug of the product to delete',
+    example: 'cotton-t-shirt',
+  })
+  @ApiNoContentResponse({
+    description: 'No content',
   })
   async delete(@Param('term') term: string) {
-    await this.productsService.delete(term);
+    try {
+      await this.productsService.delete(term);
+    } catch (error) {
+      throw new InternalServerErrorException('Internal server error');
+    }
   }
 }

@@ -22,7 +22,8 @@
       "@entity/*": ["src/common/modules/database/entities/*"],
       "@products/*": ["src/products/*"],
       "@images/*": ["src/images/*"],
-      "@database/*": ["src/common/modules/database/*"]
+      "@database/*": ["src/common/modules/database/*"],
+      "@common/*": ["src/common/*"]
     }
   }
 }

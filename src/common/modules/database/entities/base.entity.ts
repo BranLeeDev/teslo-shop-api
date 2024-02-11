@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import {
   CreateDateColumn,
@@ -6,6 +7,7 @@ import {
 } from 'typeorm';
 
 export class Base {
+  @ApiProperty({ description: 'The unique identifier of the entity' })
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -9,5 +9,7 @@ import { SeedModule } from './modules/seed/seed.module';
 
 @Module({
   imports: [ConfigModule, DatabaseModule, SwaggerModule, SeedModule],
+  controllers: [],
+  providers: [],
 })
 export class CommonModule {}

@@ -1,5 +1,9 @@
 // NestJS modules
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // Third-party libraries
@@ -23,67 +27,91 @@ export class ProductsService {
   ) {}
 
   async findAll(filterProductDto?: FilterProductDto) {
-    const queryOptions: FindManyOptions<Product> = {
-      relations: ['images'],
-    };
+    try {
+      const queryOptions: FindManyOptions<Product> = {};
 
-    if (filterProductDto) {
-      const { limit, offset } = filterProductDto;
-      queryOptions.take = limit ?? 10;
-      queryOptions.skip = offset ?? 0;
+      if (filterProductDto) {
+        const { limit, offset } = filterProductDto;
+        queryOptions.take = limit ?? 10;
+        queryOptions.skip = offset ?? 0;
+      }
+
+      const productsList = await this.productRepo.find(queryOptions);
+
+      return productsList;
+    } catch (error) {
+      return Promise.reject(error);
     }
-
-    const productsList: Product[] = await this.productRepo.find(queryOptions);
-
-    productsList.forEach((product: Product) => {
-      product.images = [product.images[0]];
-    });
-
-    return productsList;
   }
 
   async findOne(term: string, hasRelations?: boolean) {
-    const product = await this.findProduct(term, hasRelations);
-    if (!product) {
-      throw new NotFoundException(`Product not found`);
+    try {
+      const product = await this.findProduct(term, hasRelations);
+      if (!product) {
+        throw new NotFoundException(`Product not found`);
+      }
+      return product;
+    } catch (error) {
+      return Promise.reject(error);
     }
-    return product;
   }
 
   private async findProduct(term: string, hasRelations?: boolean) {
-    const relations: string[] = hasRelations ? ['images'] : [];
-    const productId: number = Number(term);
+    try {
+      const relations: string[] = hasRelations ? ['images'] : [];
+      const productId: number = Number(term);
 
-    if (!isNaN(productId)) {
-      return this.productRepo.findOne({
-        where: { id: productId },
-        relations,
-      });
-    } else {
-      return this.productRepo.findOne({
-        where: { slug: term },
-        relations,
-      });
+      if (!isNaN(productId)) {
+        return this.productRepo.findOne({
+          where: { id: productId },
+          relations,
+        });
+      } else {
+        return this.productRepo.findOne({
+          where: { slug: term },
+          relations,
+        });
+      }
+    } catch (error) {
+      return Promise.reject(error);
     }
   }
 
   async create(createProductDto: CreateProductDto) {
-    const newProduct: Product = this.productRepo.create(createProductDto);
-    return this.productRepo.save(newProduct);
+    try {
+      const newProduct: Product = this.productRepo.create(createProductDto);
+      const createdProduct = await this.productRepo.save(newProduct);
+      return createdProduct;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 
   async update(term: string, updateProductDto: UpdateProductDto) {
-    const product = await this.findOne(term);
-    this.productRepo.merge(product, updateProductDto);
-    return this.productRepo.save(product);
+    try {
+      const product = await this.findOne(term);
+      this.productRepo.merge(product, updateProductDto);
+      const updatedProduct = await this.productRepo.save(product);
+      return updatedProduct;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async delete(term: string) {
-    const product = await this.findOne(term);
-    await this.productRepo.delete(product.id);
+    try {
+      const product = await this.findOne(term);
+      await this.productRepo.delete(product.id);
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async deleteAllProducts() {
-    await this.productRepo.delete({});
+    try {
+      await this.productRepo.delete({});
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 }

@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsInt,
@@ -12,6 +13,12 @@ import {
 } from 'class-validator';
 
 export class CreateProductDto {
+  @ApiProperty({
+    description: 'The name of the product',
+    minLength: 3,
+    maxLength: 30,
+    example: 'Cotton T-Shirt',
+  })
   @IsNotEmpty({ message: 'Name is required' })
   @IsString({ message: 'Name must be a string' })
   @MinLength(3, { message: 'Name is too short' })
@@ -19,6 +26,12 @@ export class CreateProductDto {
   @Transform(({ value }: { value: string }) => value.trim())
   readonly name: string;
 
+  @ApiProperty({
+    description: 'The description of the product',
+    minLength: 15,
+    maxLength: 255,
+    example: 'Soft and comfortable cotton t-shirt, perfect for everyday wear',
+  })
   @IsNotEmpty({ message: 'Description is required' })
   @IsString({ message: 'Description must be a string' })
   @MinLength(15, { message: 'Description is too short' })
@@ -26,6 +39,12 @@ export class CreateProductDto {
   @Transform(({ value }: { value: string }) => value.trim())
   readonly description: string;
 
+  @ApiProperty({
+    description: 'The price of the product',
+    minimum: 0,
+    maximum: 1000000,
+    example: 19.99,
+  })
   @IsNotEmpty({ message: 'Price is required' })
   @IsNumber(
     {
@@ -39,9 +58,15 @@ export class CreateProductDto {
   @Max(1000000, { message: 'Price must be less than or equal to 1000000' })
   readonly price: number;
 
+  @ApiProperty({
+    description: 'The stock of the product',
+    minimum: 0,
+    example: 150,
+  })
   @IsNotEmpty({ message: 'Stock is required' })
   @IsNumber({}, { message: 'Stock must be a number' })
   @IsInt({ message: 'Stock must be an integer' })
   @IsPositive({ message: 'Stock must be positive' })
+  @Max(10000)
   readonly stock: number;
 }

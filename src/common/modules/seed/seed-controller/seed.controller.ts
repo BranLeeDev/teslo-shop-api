@@ -1,6 +1,12 @@
 // NestJS modules
 import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiInternalServerErrorResponse,
+  ApiNoContentResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 // Services
 import { SeedService } from '../seed-service/seed.service';
@@ -12,6 +18,19 @@ export class SeedController {
 
   @Get()
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Execute seed data generation',
+    description: 'Generates and inserts seed data into the database.',
+  })
+  @ApiNoContentResponse({
+    description: 'Seed data generation executed successfully',
+  })
+  @ApiBadRequestResponse({
+    description: 'The seed has already been planted previously',
+  })
+  @ApiInternalServerErrorResponse({
+    description: 'Internal server error',
+  })
   async executeSeed() {
     await this.seedService.runSeed();
   }
