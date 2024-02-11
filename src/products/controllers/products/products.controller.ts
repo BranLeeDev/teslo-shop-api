@@ -47,7 +47,6 @@ import {
 
 @ApiTags('products')
 @ApiTooManyRequestsResponse({
-  status: HttpStatus.TOO_MANY_REQUESTS,
   description: 'ThrottlerException: Too Many Requests',
 })
 @ApiInternalServerErrorResponse({
@@ -65,7 +64,7 @@ export class ProductsController {
   @ApiOperation({
     summary: 'Retrieve all available products',
     description:
-      'Fetches a list of all products currently available in the store.',
+      'Fetches a list of all products currently available in the store',
   })
   @ApiOkResponse({
     description: 'List of products retrieved successfully',

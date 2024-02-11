@@ -6,6 +6,7 @@ import {
   ApiNoContentResponse,
   ApiOperation,
   ApiTags,
+  ApiTooManyRequestsResponse,
 } from '@nestjs/swagger';
 
 // Services
@@ -20,13 +21,16 @@ export class SeedController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Execute seed data generation',
-    description: 'Generates and inserts seed data into the database.',
+    description: 'Generates and inserts seed data into the database',
   })
   @ApiNoContentResponse({
     description: 'Seed data generation executed successfully',
   })
   @ApiBadRequestResponse({
     description: 'The seed has already been planted previously',
+  })
+  @ApiTooManyRequestsResponse({
+    description: 'ThrottlerException: Too Many Requests',
   })
   @ApiInternalServerErrorResponse({
     description: 'Internal server error',

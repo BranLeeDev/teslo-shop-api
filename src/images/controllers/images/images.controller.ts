@@ -22,6 +22,7 @@ import {
   ApiNoContentResponse,
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiTooManyRequestsResponse,
 } from '@nestjs/swagger';
 
 // Entities
@@ -36,7 +37,11 @@ import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { transformImageFindAll } from '@images/utils/image.transformer';
 
 @ApiTags('images')
+@ApiTooManyRequestsResponse({
+  description: 'ThrottlerException: Too Many Requests',
+})
 @ApiInternalServerErrorResponse({
+  status: HttpStatus.INTERNAL_SERVER_ERROR,
   description: 'Internal server error',
 })
 @Controller('images')
