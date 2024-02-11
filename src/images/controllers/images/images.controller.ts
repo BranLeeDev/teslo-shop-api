@@ -7,7 +7,6 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
-  InternalServerErrorException,
   Param,
   ParseIntPipe,
   Patch,
@@ -146,7 +145,7 @@ export class ImagesController {
     try {
       await this.imagesService.delete(imageId);
     } catch (error) {
-      throw new InternalServerErrorException();
+      return Promise.reject(error);
     }
   }
 }

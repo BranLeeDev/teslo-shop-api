@@ -1,9 +1,5 @@
 // NestJS modules
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // Third-party libraries
@@ -94,7 +90,7 @@ export class ImagesService {
       await this.findImageById(imageId);
       await this.imageRepo.delete(imageId);
     } catch (error) {
-      throw new InternalServerErrorException();
+      return Promise.reject(error);
     }
   }
 
@@ -102,7 +98,7 @@ export class ImagesService {
     try {
       await this.imageRepo.delete({});
     } catch (error) {
-      throw new InternalServerErrorException();
+      return Promise.reject(error);
     }
   }
 }

@@ -7,7 +7,6 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
-  InternalServerErrorException,
   Param,
   Patch,
   Post,
@@ -87,7 +86,7 @@ export class ProductsController {
 
       return res;
     } catch (error) {
-      throw new InternalServerErrorException();
+      return Promise.reject(error);
     }
   }
 
@@ -183,7 +182,6 @@ export class ProductsController {
   }
 
   @Delete(':term')
-  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
     summary: 'Delete a product',
     description:
@@ -201,7 +199,7 @@ export class ProductsController {
     try {
       await this.productsService.delete(term);
     } catch (error) {
-      throw new InternalServerErrorException('Internal server error');
+      return Promise.reject(error);
     }
   }
 }

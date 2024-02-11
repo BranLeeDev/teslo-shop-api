@@ -1,9 +1,5 @@
 // NestJS modules
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // Third-party libraries
@@ -94,7 +90,7 @@ export class ProductsService {
       const updatedProduct = await this.productRepo.save(product);
       return updatedProduct;
     } catch (error) {
-      throw new InternalServerErrorException();
+      return Promise.reject(error);
     }
   }
 
@@ -103,7 +99,7 @@ export class ProductsService {
       const product = await this.findOne(term);
       await this.productRepo.delete(product.id);
     } catch (error) {
-      throw new InternalServerErrorException();
+      return Promise.reject(error);
     }
   }
 
@@ -111,7 +107,7 @@ export class ProductsService {
     try {
       await this.productRepo.delete({});
     } catch (error) {
-      throw new InternalServerErrorException();
+      return Promise.reject(error);
     }
   }
 }
