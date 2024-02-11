@@ -19,29 +19,41 @@ export class SeedService {
   ) {}
 
   async runSeed() {
-    if (this.isSeeded) {
-      throw new BadRequestException(
-        'The seed has already been planted previously',
-      );
+    try {
+      if (this.isSeeded) {
+        throw new BadRequestException(
+          'The seed has already been planted previously',
+        );
+      }
+
+      await this.seedProducts();
+      await this.seedImages();
+
+      this.isSeeded = true;
+    } catch (error) {
+      return Promise.reject(error);
     }
-
-    await this.seedProducts();
-    await this.seedImages();
-
-    this.isSeeded = true;
   }
 
   private async seedImages() {
-    await this.imagesService.deleteAllImages();
-    for (const image of imagesList) {
-      await this.imagesService.create(image);
+    try {
+      await this.imagesService.deleteAllImages();
+      for (const image of imagesList) {
+        await this.imagesService.create(image);
+      }
+    } catch (error) {
+      return Promise.reject(error);
     }
   }
 
   private async seedProducts() {
-    await this.productsService.deleteAllProducts();
-    for (const product of productsList) {
-      await this.productsService.create(product);
+    try {
+      await this.productsService.deleteAllProducts();
+      for (const product of productsList) {
+        await this.productsService.create(product);
+      }
+    } catch (error) {
+      return Promise.reject(error);
     }
   }
 }

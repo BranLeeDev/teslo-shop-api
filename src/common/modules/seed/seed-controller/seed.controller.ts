@@ -32,6 +32,10 @@ export class SeedController {
     description: 'Internal server error',
   })
   async executeSeed() {
-    await this.seedService.runSeed();
+    try {
+      await this.seedService.runSeed();
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 }
