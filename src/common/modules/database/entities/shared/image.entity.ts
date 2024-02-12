@@ -5,7 +5,9 @@ import { Column } from 'typeorm';
 import { Base } from './base.entity';
 
 export class Image extends Base {
-  @ApiProperty({ description: 'URL of the image' })
+  @ApiProperty({
+    description: 'URL of the image',
+  })
   @Column({ type: 'text' })
   url: string;
 
@@ -22,6 +24,13 @@ export class Image extends Base {
   })
   @Column({ type: 'varchar', length: 125, name: 'image_alt' })
   alt: string;
+
+  @ApiProperty({
+    description: 'Public ID of the image in Cloudinary',
+    nullable: true,
+  })
+  @Column({ type: 'varchar', length: 255, name: 'public_id', nullable: true })
+  publicId?: string;
 
   @Exclude()
   @Column({ type: 'enum', enum: ImagesTypes, name: 'image_type' })

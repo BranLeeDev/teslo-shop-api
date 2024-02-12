@@ -8,6 +8,7 @@ import {
 
 // Third-party libraries
 import { fastifyHelmet } from '@fastify/helmet';
+import { fastifyMultipart } from '@fastify/multipart';
 
 // Config imports
 import { SwaggerModule } from './common/modules/swagger/swagger.module';
@@ -41,6 +42,7 @@ async function bootstrap() {
       },
     },
   });
+  app.register(fastifyMultipart);
   app.setGlobalPrefix('api/v1');
   SwaggerModule.configure(app);
   await app.listen(PORT, '0.0.0.0');

@@ -39,6 +39,7 @@ import {
 import { ProductImagesService } from '@images/services/product-images/product-images.service';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { transformImageFindAll } from '@images/utils/image.transformer';
+import { ImagesService } from 'src/cloudinary/services/images/images.service';
 
 @ApiTags('product-images')
 @ApiTooManyRequestsResponse({
@@ -50,7 +51,8 @@ import { transformImageFindAll } from '@images/utils/image.transformer';
 @Controller('product-images')
 export class ProductImagesController {
   constructor(
-    private readonly imagesService: ProductImagesService,
+    private readonly productImagesService: ProductImagesService,
+    private readonly imagesService: ImagesService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
@@ -71,7 +73,9 @@ export class ProductImagesController {
 
       if (imageCached) return imageCached;
 
-      const res = await this.imagesService.findAll(filterProductImageDto);
+      const res = await this.productImagesService.findAll(
+        filterProductImageDto,
+      );
 
       const finalRes = transformImageFindAll(res);
 
@@ -98,7 +102,7 @@ export class ProductImagesController {
   })
   async createImage(@Body() createProductImageDto: CreateProductImageDto) {
     try {
-      const res = await this.imagesService.create(createProductImageDto);
+      const res = await this.productImagesService.create(createProductImageDto);
       return {
         message: 'Product image created successfully',
         data: res,
@@ -127,7 +131,7 @@ export class ProductImagesController {
     @Body() updateProductImageDto: UpdateProductImageDto,
   ) {
     try {
-      const res = await this.imagesService.update(
+      const res = await this.productImagesService.update(
         imageId,
         updateProductImageDto,
       );
@@ -154,7 +158,7 @@ export class ProductImagesController {
   @ApiNoContentResponse({ description: 'Product image successfully deleted' })
   async deleteImage(@Param('imageId', ParseIntPipe) imageId: number) {
     try {
-      await this.imagesService.delete(imageId);
+      await this.productImagesService.delete(imageId);
     } catch (error) {
       return Promise.reject(error);
     }

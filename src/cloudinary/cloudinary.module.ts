@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { v2 as cloudinary } from 'cloudinary';
+import { ImagesController } from './controllers/images/images.controller';
+import { ImagesService } from './services/images/images.service';
 import register from '@env/register.environment';
 
 @Module({
@@ -18,6 +20,9 @@ import register from '@env/register.environment';
         });
       },
     },
+    ImagesService,
   ],
+  controllers: [ImagesController],
+  exports: [ImagesService],
 })
 export class CloudinaryModule {}

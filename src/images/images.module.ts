@@ -9,9 +9,14 @@ import { ProductImagesController } from './controllers/product-images/product-im
 
 // Products module
 import { ProductsModule } from '@products/products.module';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProductImage]), ProductsModule],
+  imports: [
+    TypeOrmModule.forFeature([ProductImage]),
+    ProductsModule,
+    CloudinaryModule,
+  ],
   providers: [ProductImagesService],
   controllers: [ProductImagesController],
   exports: [ProductImagesService],

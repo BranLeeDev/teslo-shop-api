@@ -4,6 +4,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
   IsUrl,
@@ -17,6 +18,7 @@ export class CreateProductImageDto {
   @ApiProperty({
     description: 'URL of the image',
     minLength: 11,
+    format: 'binary',
   })
   @IsNotEmpty({ message: 'URL is required' })
   @IsString({ message: 'URL must be a string' })
@@ -59,12 +61,21 @@ export class CreateProductImageDto {
   @IsEnum(ImagesTypes, { message: 'Type must be a valid image type' })
   readonly type: ImagesTypes;
 
-  @ApiProperty({ description: 'Size of the image in kilobytes' })
   @IsNotEmpty({ message: 'Size is required' })
-  @IsNumber({}, { message: 'Size must be a number' })
-  @IsInt({ message: 'Size must be an integer' })
+  @IsNumber(
+    { maxDecimalPlaces: 2 },
+    { message: 'Size must have up to two decimal places' },
+  )
   @IsPositive({ message: 'Size must be positive' })
   readonly size: number;
+
+  @ApiProperty({
+    description: 'Public ID of the image in Cloudinary',
+    nullable: true,
+  })
+  @IsString({ message: 'PublicId must be a string' })
+  @IsOptional()
+  readonly publicId?: string;
 
   @ApiProperty({
     description: 'ID of the product associated with the image',
