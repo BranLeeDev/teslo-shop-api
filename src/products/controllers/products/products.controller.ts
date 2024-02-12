@@ -68,7 +68,7 @@ export class ProductsController {
   })
   @ApiOkResponse({
     description: 'List of products retrieved successfully',
-    type: [Product],
+    type: Product,
   })
   async findAll(@Query() filterProductDto: FilterProductDto) {
     try {
@@ -126,7 +126,6 @@ export class ProductsController {
   })
   @ApiOkResponse({
     description: 'Product retrieved successfully',
-    type: Product,
   })
   @ApiNotFoundResponse({
     description: 'Product not found',

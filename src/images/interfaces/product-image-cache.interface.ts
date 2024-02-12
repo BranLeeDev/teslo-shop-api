@@ -1,6 +1,6 @@
 import { ProductCache } from '@products/interfaces/product-cache.interface';
 
-export interface ImageCache {
+export interface ProductImageCache {
   id: number;
   url: string;
   width: number;

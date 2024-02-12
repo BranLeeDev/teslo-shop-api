@@ -8,7 +8,7 @@ import {
   Min,
 } from 'class-validator';
 
-export class FilterImageDto {
+export class FilterProductImageDto {
   @ApiProperty({
     required: false,
     description: 'Maximum number of images to return',

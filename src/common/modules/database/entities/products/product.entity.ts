@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
-import { Base } from '../base.entity';
-import { Image } from '@entity/images/image.entity';
+import { Base } from '../shared/base.entity';
+import { ProductImage } from '@entity/images/product-image.entity';
 
 @Entity({ name: 'products' })
 export class Product extends Base {
@@ -30,8 +30,8 @@ export class Product extends Base {
   @Column({ type: 'int' })
   stock: number;
 
-  @OneToMany(() => Image, (image) => image.product)
-  images: Image[];
+  @OneToMany(() => ProductImage, (image) => image.product)
+  images: ProductImage[];
 
   @BeforeInsert()
   @BeforeUpdate()

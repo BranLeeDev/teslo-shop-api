@@ -2,12 +2,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 // Data
-import { productsList } from '../data/products-seed.data';
-import { imagesList } from '../data/images-seed.data';
+import { productsList } from '../data/products.data';
+import { productImagesList } from '../data/product-images.data';
 
 // Services
 import { ProductsService } from '@products/services/products/products.service';
-import { ImagesService } from '@images/services/images/images.service';
+import { ProductImagesService } from '@images/services/product-images/product-images.service';
 
 @Injectable()
 export class SeedService {
@@ -15,7 +15,7 @@ export class SeedService {
 
   constructor(
     private readonly productsService: ProductsService,
-    private readonly imagesService: ImagesService,
+    private readonly productImagesService: ProductImagesService,
   ) {}
 
   async runSeed() {
@@ -37,9 +37,9 @@ export class SeedService {
 
   private async seedImages() {
     try {
-      await this.imagesService.deleteAllImages();
-      for (const image of imagesList) {
-        await this.imagesService.create(image);
+      await this.productImagesService.deleteAllImages();
+      for (const image of productImagesList) {
+        await this.productImagesService.create(image);
       }
     } catch (error) {
       return Promise.reject(error);

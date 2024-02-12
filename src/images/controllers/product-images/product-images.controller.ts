@@ -26,41 +26,44 @@ import {
 } from '@nestjs/swagger';
 
 // Entities
-import { Image } from '@entity/images/image.entity';
+import { ProductImage } from '@entity/images/product-image.entity';
 
 // DTOs
-import { CreateImageDto, FilterImageDto, UpdateImageDto } from '../../dtos';
+import {
+  CreateProductImageDto,
+  FilterProductImageDto,
+  UpdateProductImageDto,
+} from '../../dtos';
 
 // Services
-import { ImagesService } from '@images/services/images/images.service';
+import { ProductImagesService } from '@images/services/product-images/product-images.service';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { transformImageFindAll } from '@images/utils/image.transformer';
 
-@ApiTags('images')
+@ApiTags('product-images')
 @ApiTooManyRequestsResponse({
   description: 'ThrottlerException: Too Many Requests',
 })
 @ApiInternalServerErrorResponse({
-  status: HttpStatus.INTERNAL_SERVER_ERROR,
   description: 'Internal server error',
 })
-@Controller('images')
-export class ImagesController {
+@Controller('product-images')
+export class ProductImagesController {
   constructor(
-    private readonly imagesService: ImagesService,
+    private readonly imagesService: ProductImagesService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   @Get()
   @ApiOperation({
-    summary: 'Retrieve all images',
-    description: 'Fetches a list of all images',
+    summary: 'Retrieve all product images',
+    description: 'Fetches a list of all product images',
   })
   @ApiOkResponse({
-    description: 'List of images retrieved successfully',
-    type: [Image],
+    description: 'List of product images retrieved successfully',
+    type: [ProductImage],
   })
-  async getAllImages(@Query() filterImageDto: FilterImageDto) {
+  async getAllImages(@Query() filterProductImageDto: FilterProductImageDto) {
     try {
       const key = 'images-find-all';
 
@@ -68,7 +71,7 @@ export class ImagesController {
 
       if (imageCached) return imageCached;
 
-      const res = await this.imagesService.findAll(filterImageDto);
+      const res = await this.imagesService.findAll(filterProductImageDto);
 
       const finalRes = transformImageFindAll(res);
 
@@ -83,21 +86,21 @@ export class ImagesController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
-    summary: 'Create a new image',
-    description: 'Endpoint to create a new image',
+    summary: 'Create a new product image',
+    description: 'Endpoint to create a new product image',
   })
   @ApiCreatedResponse({
-    description: 'Image created successfully',
-    type: Image,
+    description: 'Product image created successfully',
+    type: ProductImage,
   })
   @ApiBadRequestResponse({
     description: 'Invalid request. Please check your input',
   })
-  async createImage(@Body() createImageDto: CreateImageDto) {
+  async createImage(@Body() createProductImageDto: CreateProductImageDto) {
     try {
-      const res = await this.imagesService.create(createImageDto);
+      const res = await this.imagesService.create(createProductImageDto);
       return {
-        message: 'Image created successfully',
+        message: 'Product image created successfully',
         data: res,
       };
     } catch (error) {
@@ -106,27 +109,30 @@ export class ImagesController {
   }
 
   @Patch(':imageId')
-  @ApiOperation({ summary: 'Update an image' })
+  @ApiOperation({ summary: 'Update a product image' })
   @ApiParam({
     name: 'imageId',
-    description: 'The ID of the image to update',
+    description: 'The ID of the product image to update',
     example: 1,
   })
   @ApiOkResponse({
-    description: 'Image updated successfully',
-    type: Image,
+    description: 'Product image updated successfully',
+    type: ProductImage,
   })
   @ApiBadRequestResponse({
     description: 'Invalid request. Please check your input',
   })
   async updateImage(
     @Param('imageId', ParseIntPipe) imageId: number,
-    @Body() updateImageDto: UpdateImageDto,
+    @Body() updateProductImageDto: UpdateProductImageDto,
   ) {
     try {
-      const res = await this.imagesService.update(imageId, updateImageDto);
+      const res = await this.imagesService.update(
+        imageId,
+        updateProductImageDto,
+      );
       return {
-        message: 'Image updated successfully',
+        message: 'Product image updated successfully',
         data: res,
       };
     } catch (error) {
@@ -137,15 +143,15 @@ export class ImagesController {
   @Delete(':imageId')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
-    summary: 'Delete an image',
-    description: 'Deletes the image with the specified ID',
+    summary: 'Delete a product image',
+    description: 'Deletes the product image with the specified ID',
   })
   @ApiParam({
     name: 'imageId',
-    description: 'The ID of the image to delete',
+    description: 'The ID of the product image to delete',
     example: 1,
   })
-  @ApiNoContentResponse({ description: 'Image successfully deleted' })
+  @ApiNoContentResponse({ description: 'Product image successfully deleted' })
   async deleteImage(@Param('imageId', ParseIntPipe) imageId: number) {
     try {
       await this.imagesService.delete(imageId);

@@ -6,25 +6,29 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 
 // Entities
-import { Image } from '@entity/images/image.entity';
+import { ProductImage } from '@entity/images/product-image.entity';
 
 // DTOs
-import { CreateImageDto, UpdateImageDto, FilterImageDto } from '../../dtos';
+import {
+  CreateProductImageDto,
+  UpdateProductImageDto,
+  FilterProductImageDto,
+} from '../../dtos';
 
 // Services
 import { ProductsService } from '@products/services/products/products.service';
 
 @Injectable()
-export class ImagesService {
+export class ProductImagesService {
   constructor(
-    @InjectRepository(Image)
-    private readonly imageRepo: Repository<Image>,
+    @InjectRepository(ProductImage)
+    private readonly productImageRepo: Repository<ProductImage>,
     private readonly productsService: ProductsService,
   ) {}
 
-  async findAll(filterImageDto?: FilterImageDto) {
+  async findAll(filterImageDto?: FilterProductImageDto) {
     try {
-      const queryOptions: FindManyOptions<Image> = {
+      const queryOptions: FindManyOptions<ProductImage> = {
         relations: ['product'],
       };
 
@@ -34,23 +38,23 @@ export class ImagesService {
         queryOptions.skip = offset ?? 0;
       }
 
-      const imagesList = await this.imageRepo.find(queryOptions);
+      const imagesList = await this.productImageRepo.find(queryOptions);
       return imagesList;
     } catch (error) {
       return Promise.reject(error);
     }
   }
 
-  async create(createImageDto: CreateImageDto) {
+  async create(createProductImageDto: CreateProductImageDto) {
     try {
-      const newImage = this.imageRepo.create(createImageDto);
-      if (createImageDto.productId) {
+      const newImage = this.productImageRepo.create(createProductImageDto);
+      if (createProductImageDto.productId) {
         const product = await this.productsService.findOne(
-          String(createImageDto.productId),
+          String(createProductImageDto.productId),
         );
         newImage.product = product;
       }
-      const createdImage = await this.imageRepo.save(newImage);
+      const createdImage = await this.productImageRepo.save(newImage);
       return createdImage;
     } catch (error) {
       return Promise.reject(error);
@@ -59,7 +63,7 @@ export class ImagesService {
 
   private async findImageById(imageId: number) {
     try {
-      const image = await this.imageRepo.findOneBy({ id: imageId });
+      const image = await this.productImageRepo.findOneBy({ id: imageId });
       if (!image)
         throw new NotFoundException(`Image with id ${imageId} not found`);
       return image;
@@ -68,7 +72,7 @@ export class ImagesService {
     }
   }
 
-  async update(imageId: number, updateImageDto: UpdateImageDto) {
+  async update(imageId: number, updateImageDto: UpdateProductImageDto) {
     try {
       const imageFound = await this.findImageById(imageId);
       if (updateImageDto.productId) {
@@ -77,8 +81,8 @@ export class ImagesService {
         );
         imageFound.product = product;
       }
-      this.imageRepo.merge(imageFound, updateImageDto);
-      const updatedImage = await this.imageRepo.save(imageFound);
+      this.productImageRepo.merge(imageFound, updateImageDto);
+      const updatedImage = await this.productImageRepo.save(imageFound);
       return updatedImage;
     } catch (error) {
       return Promise.reject(error);
@@ -88,7 +92,7 @@ export class ImagesService {
   async delete(imageId: number) {
     try {
       await this.findImageById(imageId);
-      await this.imageRepo.delete(imageId);
+      await this.productImageRepo.delete(imageId);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -96,7 +100,7 @@ export class ImagesService {
 
   async deleteAllImages() {
     try {
-      await this.imageRepo.delete({});
+      await this.productImageRepo.delete({});
     } catch (error) {
       return Promise.reject(error);
     }

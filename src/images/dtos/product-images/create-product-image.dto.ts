@@ -13,7 +13,7 @@ import {
 import { ImagesTypes } from '@database/types/enums.type';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateImageDto {
+export class CreateProductImageDto {
   @ApiProperty({
     description: 'URL of the image',
     minLength: 11,
@@ -60,11 +60,11 @@ export class CreateImageDto {
   readonly type: ImagesTypes;
 
   @ApiProperty({ description: 'Size of the image in kilobytes' })
-  @IsNotEmpty({ message: 'SizeKb is required' })
-  @IsNumber({}, { message: 'SizeKb must be a number' })
-  @IsInt({ message: 'SizeKb must be an integer' })
-  @IsPositive({ message: 'SizeKb must be positive' })
-  readonly sizeKb: number;
+  @IsNotEmpty({ message: 'Size is required' })
+  @IsNumber({}, { message: 'Size must be a number' })
+  @IsInt({ message: 'Size must be an integer' })
+  @IsPositive({ message: 'Size must be positive' })
+  readonly size: number;
 
   @ApiProperty({
     description: 'ID of the product associated with the image',

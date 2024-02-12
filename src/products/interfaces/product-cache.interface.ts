@@ -1,4 +1,4 @@
-import { ImageCache } from '@images/interfaces/image-cache.interface';
+import { ProductImageCache } from '@images/interfaces/product-image-cache.interface';
 
 export interface ProductCache {
   id: number;
@@ -7,5 +7,5 @@ export interface ProductCache {
   description: string;
   price: number;
   stock: number;
-  images?: ImageCache[];
+  images?: ProductImageCache[];
 }

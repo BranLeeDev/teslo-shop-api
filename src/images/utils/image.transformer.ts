@@ -1,7 +1,9 @@
-import { Image } from '@entity/images/image.entity';
-import { ImageCache } from '@images/interfaces/image-cache.interface';
+import { ProductImage } from '@entity/images/product-image.entity';
+import { ProductImageCache } from '@images/interfaces/product-image-cache.interface';
 
-export function transformImageFindAll(imagesList: Image[]): ImageCache[] {
+export function transformImageFindAll(
+  imagesList: ProductImage[],
+): ProductImageCache[] {
   return imagesList.map((image) => {
     return {
       id: image.id,
@@ -21,7 +23,9 @@ export function transformImageFindAll(imagesList: Image[]): ImageCache[] {
   });
 }
 
-export function transformImageFindByProduct(imagesList: Image[]): ImageCache[] {
+export function transformImageFindByProduct(
+  imagesList: ProductImage[],
+): ProductImageCache[] {
   return imagesList.map((image) => {
     return {
       id: image.id,

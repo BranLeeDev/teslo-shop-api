@@ -1,14 +1,14 @@
-import { CreateImageDto } from 'src/images/dtos';
+import { CreateProductImageDto } from 'src/images/dtos';
 import { ImagesTypes } from '../../database/types/enums.type';
 
-export const imagesList: CreateImageDto[] = [
+export const productImagesList: CreateProductImageDto[] = [
   {
     url: 'https://res.cloudinary.com/dbbixakcl/image/upload/f_auto,q_auto/v1/teslo-shop-api/images/bh0rwzdi64njgfumgvp8',
     width: 640,
     height: 427,
     alt: 'Jar with coconut oil and spoon on rustic surface',
     type: ImagesTypes.JPG,
-    sizeKb: 69.25,
+    size: 69.25,
     productId: 1,
   },
   {
@@ -17,7 +17,7 @@ export const imagesList: CreateImageDto[] = [
     height: 427,
     alt: 'Cartoon of a cracked open coconut',
     type: ImagesTypes.JPG,
-    sizeKb: 86.36,
+    size: 86.36,
     productId: 1,
   },
   {
@@ -26,7 +26,7 @@ export const imagesList: CreateImageDto[] = [
     height: 427,
     alt: 'Open jar of coconut oil',
     type: ImagesTypes.JPG,
-    sizeKb: 56.56,
+    size: 56.56,
     productId: 1,
   },
   {
@@ -35,7 +35,7 @@ export const imagesList: CreateImageDto[] = [
     height: 427,
     alt: 'Person holding a smartphone with a list',
     type: ImagesTypes.JPG,
-    sizeKb: 40.57,
+    size: 40.57,
     productId: 2,
   },
   {
@@ -44,7 +44,7 @@ export const imagesList: CreateImageDto[] = [
     height: 427,
     alt: 'Gold smartphone on a dark surface',
     type: ImagesTypes.JPG,
-    sizeKb: 43.33,
+    size: 43.33,
     productId: 2,
   },
   {
@@ -53,7 +53,7 @@ export const imagesList: CreateImageDto[] = [
     height: 427,
     alt: 'Person with phone displaying a flower, next to an apple',
     type: ImagesTypes.JPG,
-    sizeKb: 44.49,
+    size: 44.49,
     productId: 2,
   },
 ];

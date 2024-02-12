@@ -3,17 +3,17 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Images module
-import { Image } from '@entity/images/image.entity';
-import { ImagesService } from './services/images/images.service';
-import { ImagesController } from './controllers/images/images.controller';
+import { ProductImage } from '@entity/images/product-image.entity';
+import { ProductImagesService } from './services/product-images/product-images.service';
+import { ProductImagesController } from './controllers/product-images/product-images.controller';
 
 // Products module
 import { ProductsModule } from '@products/products.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Image]), ProductsModule],
-  providers: [ImagesService],
-  controllers: [ImagesController],
-  exports: [ImagesService],
+  imports: [TypeOrmModule.forFeature([ProductImage]), ProductsModule],
+  providers: [ProductImagesService],
+  controllers: [ProductImagesController],
+  exports: [ProductImagesService],
 })
 export class ImagesModule {}
