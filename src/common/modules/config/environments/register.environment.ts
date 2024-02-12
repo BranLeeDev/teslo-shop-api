@@ -14,6 +14,11 @@ export default registerAs('registers', () => {
         port: Number(process.env.REDIS_PORT) as number,
         password: process.env.REDIS_PASSWORD as string,
       },
+      cloudinary: {
+        cloudName: process.env.CLOUDINARY_CLOUD_NAME as string,
+        apiKey: process.env.CLOUDINARY_API_KEY as string,
+        apiSecret: process.env.CLOUDINARY_API_SECRET as string,
+      },
     };
   }
 
@@ -31,6 +36,11 @@ export default registerAs('registers', () => {
       host: process.env.REDIS_HOST as string,
       port: Number(process.env.REDIS_PORT) as number,
       password: process.env.REDIS_PASSWORD as string,
+    },
+    cloudinary: {
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME as string,
+      apiKey: process.env.CLOUDINARY_API_KEY as string,
+      apiSecret: process.env.CLOUDINARY_API_SECRET as string,
     },
   };
 });

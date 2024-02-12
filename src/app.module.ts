@@ -9,6 +9,7 @@ import { CommonModule } from './common/common.module';
 import { ProductsModule } from './products/products.module';
 import { ImagesModule } from './images/images.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     }),
     CommonModule,
     ProductsModule,
+    CloudinaryModule,
     ImagesModule,
   ],
   controllers: [],

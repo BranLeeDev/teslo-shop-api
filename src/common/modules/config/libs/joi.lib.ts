@@ -58,4 +58,7 @@ export const joiConfigSchema = Joi.object({
     is: PROD,
     then: Joi.string().min(20).max(64).required(),
   }),
+  CLOUDINARY_CLOUD_NAME: Joi.string().min(3).required(),
+  CLOUDINARY_API_KEY: Joi.number().integer().min(100000).required(),
+  CLOUDINARY_API_SECRET: Joi.string().min(6).required(),
 });
