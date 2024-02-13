@@ -10,7 +10,7 @@ export function transformImageFindAll(
       url: image.url,
       width: image.width,
       height: image.height,
-      alt: image.alt,
+      alt: image.alt as string,
       product: {
         id: image.product.id,
         name: image.product.name,
@@ -32,7 +32,7 @@ export function transformImageFindByProduct(
       url: image.url,
       width: image.width,
       height: image.height,
-      alt: image.alt,
+      alt: image.alt as string,
     };
   });
 }

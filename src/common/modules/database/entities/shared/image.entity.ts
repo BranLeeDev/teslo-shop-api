@@ -32,10 +32,7 @@ export class Image extends Base {
   })
   alt?: string;
 
-  @ApiProperty({
-    description: 'Public ID of the image in Cloudinary',
-    nullable: true,
-  })
+  @Exclude()
   @Column({ type: 'varchar', length: 255, name: 'public_id', nullable: true })
   publicId?: string;
 
