@@ -37,7 +37,6 @@ export class SeedService {
 
   private async seedImages() {
     try {
-      await this.productImagesService.deleteAllImages();
       for (const image of productImagesList) {
         await this.productImagesService.create(image);
       }
@@ -48,7 +47,6 @@ export class SeedService {
 
   private async seedProducts() {
     try {
-      await this.productsService.deleteAllProducts();
       for (const product of productsList) {
         await this.productsService.create(product);
       }

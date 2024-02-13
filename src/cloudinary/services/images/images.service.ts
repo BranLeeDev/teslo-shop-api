@@ -20,7 +20,7 @@ export class ImagesService {
               url: this.getOptimizedImageUrl(result.public_id),
               width: result.width,
               height: result.height,
-              type: ImagesTypes[result.format.toUpperCase() as ImagesTypes],
+              type: result.format.toUpperCase() as ImagesTypes,
               size: this.bytesToKilobytes(result.bytes),
               publicId: result.public_id,
             };
@@ -53,6 +53,14 @@ export class ImagesService {
       await cloudinary.api.resource(publicId).catch((error) => {
         throw new NotFoundException(error.error);
       });
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async destroyImage(publicId: string) {
+    try {
+      await cloudinary.uploader.destroy(publicId);
     } catch (error) {
       return Promise.reject(error);
     }

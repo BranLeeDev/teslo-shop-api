@@ -14,12 +14,14 @@ import {
   FilterProductDto,
   UpdateProductDto,
 } from '../../dtos/index';
+import { ImagesService } from '@cloudinary/services/images/images.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
+    private readonly imagesService: ImagesService,
   ) {}
 
   async findAll(filterProductDto?: FilterProductDto) {
@@ -96,16 +98,15 @@ export class ProductsService {
 
   async delete(term: string) {
     try {
-      const product = await this.findOne(term);
-      await this.productRepo.delete(product.id);
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  }
+      const product = await this.findOne(term, true);
 
-  async deleteAllProducts() {
-    try {
-      await this.productRepo.delete({});
+      for (const image of product.images) {
+        if (image.publicId) {
+          await this.imagesService.destroyImage(image.publicId);
+        }
+      }
+
+      await this.productRepo.delete(product.id);
     } catch (error) {
       return Promise.reject(error);
     }

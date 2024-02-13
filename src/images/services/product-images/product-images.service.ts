@@ -114,16 +114,11 @@ export class ProductImagesService {
 
   async delete(imageId: number) {
     try {
-      await this.findImageById(imageId);
+      const productImage = await this.findImageById(imageId);
+      if (productImage.publicId) {
+        await this.imagesService.destroyImage(productImage.publicId);
+      }
       await this.productImageRepo.delete(imageId);
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  }
-
-  async deleteAllImages() {
-    try {
-      await this.productImageRepo.delete({});
     } catch (error) {
       return Promise.reject(error);
     }

@@ -11,7 +11,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { ImagesTypes } from '@database/types/enums.type';
+import { ImagesTypes, ProductImagesTypes } from '@database/types/enums.type';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateProductImageDto {
@@ -19,6 +19,8 @@ export class CreateProductImageDto {
     description: 'URL of the image',
     minLength: 11,
     format: 'binary',
+    example:
+      'https://res.cloudinary.com/dbbixakcl/image/upload/f_auto,q_auto/v1/teslo-shop-api/images/products/opwcokhlkeba24dqgdbh',
   })
   @IsNotEmpty({ message: 'URL is required' })
   @IsString({ message: 'URL must be a string' })
@@ -27,14 +29,14 @@ export class CreateProductImageDto {
   @Transform(({ value }: { value: string }) => value.trim())
   readonly url: string;
 
-  @ApiProperty({ description: 'Width of the image in pixels' })
+  @ApiProperty({ description: 'Width of the image in pixels', example: 640 })
   @IsNotEmpty({ message: 'Width is required' })
   @IsNumber({}, { message: 'Width must be a number' })
   @IsInt({ message: 'Width must be an integer' })
   @IsPositive({ message: 'Width must be positive' })
   readonly width: number;
 
-  @ApiProperty({ description: 'Height of the image in pixels' })
+  @ApiProperty({ description: 'Height of the image in pixels', example: 427 })
   @IsNotEmpty({ message: 'Height is required' })
   @IsNumber({}, { message: 'Height must be a number' })
   @IsInt({ message: 'Height must be an integer' })
@@ -46,6 +48,8 @@ export class CreateProductImageDto {
     minLength: 3,
     maxLength: 125,
     nullable: true,
+    example:
+      'Hand holding a hanger with an orange t-shirt against a white background',
   })
   @IsNotEmpty({ message: 'Alt is required' })
   @IsString({ message: 'Alt must be a string' })
@@ -57,12 +61,17 @@ export class CreateProductImageDto {
 
   @ApiProperty({
     description: 'Type of the image',
-    enum: ImagesTypes,
+    enum: ProductImagesTypes,
+    example: ProductImagesTypes.JPG,
   })
   @IsNotEmpty({ message: 'Type is required' })
-  @IsEnum(ImagesTypes, { message: 'Type must be a valid image type' })
+  @IsEnum(ProductImagesTypes, { message: 'Type must be a valid image type' })
   readonly type: ImagesTypes;
 
+  @ApiProperty({
+    description: 'Size of the image in kilobytes (KB)',
+    example: 24,
+  })
   @IsNotEmpty({ message: 'Size is required' })
   @IsNumber(
     { maxDecimalPlaces: 2 },
@@ -74,6 +83,7 @@ export class CreateProductImageDto {
   @ApiProperty({
     description: 'Public ID of the image in Cloudinary',
     nullable: true,
+    example: 'teslo-shop-api/images/products/opwcokhlkeba24dqgdbh',
   })
   @IsString({ message: 'PublicId must be a string' })
   @IsOptional()
