@@ -22,12 +22,12 @@ import {
 } from '@nestjs/swagger';
 import { FileUploadDto } from '../../dtos/file-upload.dto';
 
-@ApiTags('images')
-@Controller('images')
-export class ImagesController {
+@ApiTags('upload')
+@Controller('upload')
+export class UploadController {
   constructor(private readonly imagesService: ImagesService) {}
 
-  @Post('upload')
+  @Post('image')
   @ApiOperation({
     summary: 'Upload an image',
     description:
