@@ -23,7 +23,8 @@
       "@products/*": ["src/products/*"],
       "@images/*": ["src/images/*"],
       "@database/*": ["src/common/modules/database/*"],
-      "@common/*": ["src/common/*"]
+      "@common/*": ["src/common/*"],
+      "@cloudinary/*": ["src/cloudinary/*"]
     }
   }
 }

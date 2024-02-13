@@ -21,9 +21,16 @@ export class Image extends Base {
 
   @ApiProperty({
     description: 'Alternate text for the image',
+    nullable: true,
   })
-  @Column({ type: 'varchar', length: 125, name: 'image_alt' })
-  alt: string;
+  @Column({
+    type: 'varchar',
+    length: 125,
+    name: 'image_alt',
+    nullable: true,
+    default: 'Image default',
+  })
+  alt?: string;
 
   @ApiProperty({
     description: 'Public ID of the image in Cloudinary',

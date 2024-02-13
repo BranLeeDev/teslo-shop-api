@@ -8,10 +8,12 @@ import {
   HttpStatus,
   Inject,
   Param,
+  ParseFilePipeBuilder,
   ParseIntPipe,
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -23,6 +25,9 @@ import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiTooManyRequestsResponse,
+  ApiConsumes,
+  ApiBody,
+  ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
 
 // Entities
@@ -40,6 +45,12 @@ import { ProductImagesService } from '@images/services/product-images/product-im
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { transformImageFindAll } from '@images/utils/image.transformer';
 import { ImagesService } from 'src/cloudinary/services/images/images.service';
+import { FileUploadDto } from '@cloudinary/dtos/file-upload.dto';
+import {
+  FileInterceptor,
+  MemoryStorageFile,
+  UploadedFile,
+} from '@blazity/nest-file-fastify';
 
 @ApiTags('product-images')
 @ApiTooManyRequestsResponse({
@@ -107,6 +118,53 @@ export class ProductImagesController {
         message: 'Product image created successfully',
         data: res,
       };
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  @Post('products/:term')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Add an image to a product',
+    description:
+      'Uploads the image to Cloudinary and automatically associates it with a product. The endpoint accepts images of type jpg and jpeg with a maximum size of 150KB',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Image file',
+    type: FileUploadDto,
+  })
+  @ApiUnprocessableEntityResponse({
+    description: 'The file is invalid or its name is incorrect',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid or incorrect field provided for the file',
+  })
+  @UseInterceptors(FileInterceptor('image'))
+  async addImageToProduct(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /(jpg|jpeg)$/,
+        })
+        .addMaxSizeValidator({
+          maxSize: 153600,
+          message: 'Image size must not exceed 150 KB',
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    image: MemoryStorageFile,
+    @Param('term') term: string,
+  ) {
+    try {
+      const res = await this.productImagesService.addImageToProduct(
+        image,
+        term,
+      );
+      return res;
     } catch (error) {
       return Promise.reject(error);
     }

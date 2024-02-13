@@ -45,13 +45,15 @@ export class CreateProductImageDto {
     description: 'Alt text of the image',
     minLength: 3,
     maxLength: 125,
+    nullable: true,
   })
   @IsNotEmpty({ message: 'Alt is required' })
   @IsString({ message: 'Alt must be a string' })
   @MinLength(3, { message: 'Alt is too short' })
   @MaxLength(125, { message: 'Alt is too long' })
+  @IsOptional()
   @Transform(({ value }: { value: string }) => value.trim())
-  readonly alt: string;
+  readonly alt?: string;
 
   @ApiProperty({
     description: 'Type of the image',

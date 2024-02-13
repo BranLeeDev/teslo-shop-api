@@ -7,7 +7,7 @@ import * as streamifier from 'streamifier';
 
 @Injectable()
 export class ImagesService {
-  uploadImage(image: MemoryStorageFile) {
+  uploadImage(image: MemoryStorageFile): Promise<CreateImageDto> {
     try {
       return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(

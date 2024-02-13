@@ -17,6 +17,8 @@ import {
 
 // Services
 import { ProductsService } from '@products/services/products/products.service';
+import { ImagesService } from '@cloudinary/services/images/images.service';
+import { MemoryStorageFile } from '@blazity/nest-file-fastify';
 
 @Injectable()
 export class ProductImagesService {
@@ -24,6 +26,7 @@ export class ProductImagesService {
     @InjectRepository(ProductImage)
     private readonly productImageRepo: Repository<ProductImage>,
     private readonly productsService: ProductsService,
+    private readonly imagesService: ImagesService,
   ) {}
 
   async findAll(filterImageDto?: FilterProductImageDto) {
@@ -48,6 +51,11 @@ export class ProductImagesService {
   async create(createProductImageDto: CreateProductImageDto) {
     try {
       const newImage = this.productImageRepo.create(createProductImageDto);
+      if (createProductImageDto.publicId) {
+        await this.imagesService.checkPublicIdInCloudinary(
+          createProductImageDto.publicId,
+        );
+      }
       if (createProductImageDto.productId) {
         const product = await this.productsService.findOne(
           String(createProductImageDto.productId),
@@ -56,6 +64,21 @@ export class ProductImagesService {
       }
       const createdImage = await this.productImageRepo.save(newImage);
       return createdImage;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async addImageToProduct(image: MemoryStorageFile, term: string) {
+    try {
+      const uploadedImage = await this.imagesService.uploadImage(image);
+      const product = await this.productsService.findOne(term);
+      const createProductImageDto: CreateProductImageDto = {
+        ...uploadedImage,
+        productId: product.id,
+      };
+      const createdProductImage = await this.create(createProductImageDto);
+      return createdProductImage;
     } catch (error) {
       return Promise.reject(error);
     }
