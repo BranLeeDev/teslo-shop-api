@@ -128,7 +128,7 @@ export class ProductImagesController {
   @ApiOperation({
     summary: 'Add an image to a product',
     description:
-      'Uploads the image to Cloudinary and automatically associates it with a product. The endpoint accepts images of type jpg and jpeg with a maximum size of 150KB',
+      'Uploads the image to Cloudinary and automatically associates it with a product. The endpoint accepts images of type jpg and jpeg with a maximum size of 150KB. It is advisable to update the default description that comes with the alt attribute of the image',
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
