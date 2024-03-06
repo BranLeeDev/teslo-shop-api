@@ -10,6 +10,7 @@ import { ENV } from '@env/variables.environment';
 // Entities
 import { ProductImage } from '@entity/images/product-image.entity';
 import { Product } from '@entity/products/product.entity';
+import { DeviceImage } from '@entity/images/device-image.entity';
 
 @Global()
 @Module({
@@ -35,7 +36,7 @@ import { Product } from '@entity/products/product.entity';
           type: 'postgres',
           url: DATABASE_URL,
           synchronize: true,
-          entities: [Product, ProductImage],
+          entities: [DeviceImage, ProductImage, Product],
         };
       },
     }),

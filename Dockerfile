@@ -2,7 +2,7 @@ FROM node:20.11.0-alpine3.19 AS base
 
 ENV DIR /teslo-shop-api
 WORKDIR ${DIR}
-RUN npm i -g pnpm
+RUN corepack enable
 ARG NPM_TOKEN
 
 FROM base AS build

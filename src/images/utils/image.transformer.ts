@@ -7,9 +7,6 @@ export function transformImageFindAll(
   return imagesList.map((image) => {
     return {
       id: image.id,
-      url: image.url,
-      width: image.width,
-      height: image.height,
       alt: image.alt as string,
       product: {
         id: image.product.id,
@@ -29,9 +26,6 @@ export function transformImageFindByProduct(
   return imagesList.map((image) => {
     return {
       id: image.id,
-      url: image.url,
-      width: image.width,
-      height: image.height,
       alt: image.alt as string,
     };
   });

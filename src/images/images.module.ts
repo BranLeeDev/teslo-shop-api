@@ -10,10 +10,11 @@ import { ProductImagesController } from './controllers/product-images/product-im
 // Products module
 import { ProductsModule } from '@products/products.module';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
+import { DeviceImage } from '@entity/images/device-image.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProductImage]),
+    TypeOrmModule.forFeature([DeviceImage, ProductImage]),
     ProductsModule,
     CloudinaryModule,
   ],

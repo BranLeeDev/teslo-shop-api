@@ -9,3 +9,9 @@ export enum ProductImagesTypes {
   JPEG = 'JPEG',
   JPG = 'JPG',
 }
+
+export enum DeviceImagesTypes {
+  PHONE = 'PHONE',
+  TABLET = 'TABLET',
+  DESKTOP = 'DESKTOP',
+}

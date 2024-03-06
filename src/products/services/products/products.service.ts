@@ -100,12 +100,6 @@ export class ProductsService {
     try {
       const product = await this.findOne(term, true);
 
-      for (const image of product.images) {
-        if (image.publicId) {
-          await this.imagesService.destroyImage(image.publicId);
-        }
-      }
-
       await this.productRepo.delete(product.id);
     } catch (error) {
       return Promise.reject(error);
